@@ -11,17 +11,28 @@
 #include"Prescription.h"
 
 using namespace std;
+
 int main()
 {
+	string choix;
+
+	cout << "Que voulez vous faire ?" << endl;
+	cout << "Pour créer un patient, entrez : Create" << endl;
+	cout << "Pour afficher les informations concernant un patient, entrez : Afficher patient" << endl;
+	getline(cin,choix);
+
+	if (choix == "Create oui")
+	{
+		Patient temp_patient;
+
+		temp_patient.remplir_patient();
+		cout << "Patient créé" << endl;
+	}else
+	{
+		cout << "En cours de développement" << endl;
+	}
+
 
 }
 
-void creer_patient()
-{
-	Patient temp_patient;
-	//Creation d'un patient qui sera ajouté à la base de donnée.
-
-	void Patient::remplir_patient();
-	//Appel de la méthode de création d'un patient.
-}
 
