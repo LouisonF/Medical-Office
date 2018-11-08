@@ -9,10 +9,10 @@
 #define PRESCRIPTION_H_
 #include<iostream>
 #include<string>
+
+
+using namespace std;
 #include<vector>
-
-namespace std {
-
 class Prescription {
 public:
 	//Atributs
@@ -27,7 +27,7 @@ private:
 		//Attributs
 		string prescripteur;
 		string date_delivrance;
-		vector<vector<string>vector<int>vector<string>> liste_medic;
+		vector<vector<string>> liste_medic();
 		string patient;
 		//Méthodes
 
@@ -35,6 +35,6 @@ private:
 
 };
 
-} /* namespace std */
+/* namespace std */
 
 #endif /* PRESCRIPTION_H_ */
