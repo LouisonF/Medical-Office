@@ -21,7 +21,7 @@ public:
 	DataBase();
 	virtual ~DataBase();
 	sqlite3 get_db();
-	//static int affichage_sql(void*, int, char**, char**);
+	static int affichage_sql(void*, int, char**, char**);
 	void connect_database();
 	void set_database(sqlite3*);
 	typedef int (*sqlite3_afficher_sql)(
