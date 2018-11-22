@@ -20,7 +20,34 @@ DataBase::~DataBase() {
 }
 
 void DataBase::connect_database(){
-	   sqlite3 *db;
+	   /*sqlite3 *db;
+
+	   int rc;
+
+	   rc = sqlite3_open("medicalDB.db", &db);
+
+	   if( rc ) {
+		   cout << "Can't open database: " << endl;
+	   } else {
+		   cout << "Opened database successfully" << endl;
+	   }*/
+	   //sqlite3_close(db);
+}
+
+static int affichage_sql(void *NotUsed, int argc, char **argv, char **azColName) {
+   int i;
+   for(i = 0; i<argc; i++) {
+	   printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+   }
+   cout << endl;
+   return 0;
+}
+
+void DataBase::set_database(sqlite3 *db){
+	char* sql;
+
+	char *zErrMsg;
+
 
 	   int rc;
 
@@ -31,38 +58,21 @@ void DataBase::connect_database(){
 	   } else {
 		   cout << "Opened database successfully" << endl;
 	   }
-	   //sqlite3_close(db);
-}
 
-int DataBase::affichage_sql(void *NotUsed, int argc, char **argv, char **azColName) {
-   int i;
-   for(i = 0; i<argc; i++) {
-      cout << azColName[i] << " : " << argv[i] << endl << argv[i] << "vide" << endl;
-   }
-   cout << endl;
-   return 0;
-}
-
-void DataBase::set_database(){
-	string sql;
-	int rc;
-	char *zErrMsg;
-
-	sql = "CREATE TABLE PATIENT("
-			"num_secu TEXT PRIMARY KEY     NOT NULL,"
-			"nom           	TEXT    NOT NULL,"
-			"prenom        	TEXT    NOT NULL,"
-			"date_naissance   TEXT    NOT NULL,"
-			"tel          	TEXT    NOT NULL,"
-			"adresse      	CHAR(50),"
-			"medecin      	TEXT, "
-			"grp_sanguin      TEXT );";
+	   sql = "CREATE TABLE COMPANY("  \
+	      "ID INT PRIMARY KEY     NOT NULL," \
+	      "NAME           TEXT    NOT NULL," \
+	      "AGE            INT     NOT NULL," \
+	      "ADDRESS        CHAR(50)," \
+	      "SALARY         REAL );";
 
 	/* Execute SQL statement */
-	rc = sqlite3_exec(db, sql.c_str(), affichage_sql, 0, &zErrMsg);
+	rc = sqlite3_exec(db, sql, affichage_sql, 0, &zErrMsg);
 
 	if( rc != SQLITE_OK ){
 	      fprintf(stderr, "SQL error: %s\n", zErrMsg);
+	      cout << sqlite3_errmsg(db) << endl;
+	      cout << sqlite3_extended_errcode(db) << endl;
 	      sqlite3_free(zErrMsg);
 	} else {
 		cout << "Table created successfully" << endl;
