@@ -27,10 +27,11 @@ private:
 		//Attributs
 		string prescripteur;
 		string date_delivrance;
-		vector<vector<string>> liste_medic();
-		string patient;
+		vector<vector<string>> liste_medic;
+		string nom;
+		string prenom;
+		string date_naissance;
 		//Méthodes
-
 
 
 };

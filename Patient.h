@@ -28,11 +28,12 @@ private:
 	//Attributs
 	string nom;
 	string prenom;
-	string birthdate;
-	string phone;
+	string date_naissance;
+	string tel;
 	string medecin;
 	string num_secu;
 	string grp_sanguin;
+	string adresse;
 	//Méthodes
 
 
