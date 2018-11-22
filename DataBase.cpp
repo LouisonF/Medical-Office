@@ -45,7 +45,6 @@ static int affichage_sql(void *NotUsed, int argc, char **argv, char **azColName)
 
 void DataBase::set_database(sqlite3 *db){
 	char* sql;
-
 	char *zErrMsg;
 
 
@@ -59,12 +58,14 @@ void DataBase::set_database(sqlite3 *db){
 		   cout << "Opened database successfully" << endl;
 	   }
 
-	   sql = "CREATE TABLE COMPANY("  \
-	      "ID INT PRIMARY KEY     NOT NULL," \
-	      "NAME           TEXT    NOT NULL," \
-	      "AGE            INT     NOT NULL," \
-	      "ADDRESS        CHAR(50)," \
-	      "SALARY         REAL );";
+	   sql = "CREATE TABLE PATIENT("  \
+	      "num_secu TEXT PRIMARY KEY    NOT NULL," \
+	      "nom           	TEXT    	NOT NULL," \
+	      "prenom           TEXT    	NOT NULL," \
+	      "date_naissance   TEXT 		NOT NULL," \
+	      "tel        		TEXT," \
+	      "adresse        	TEXT," \
+	      "medecin         	TEXT );";
 
 	/* Execute SQL statement */
 	rc = sqlite3_exec(db, sql, affichage_sql, 0, &zErrMsg);
