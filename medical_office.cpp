@@ -10,14 +10,31 @@
 #include"Patient.h"
 #include"Prescription.h"
 #include "DataBase.h"
+#include "Patient.h"
 
 using namespace std;
 
 int main()
 {
+	//INITIALISATION DE LA BASE DE DONNEE
+	sqlite3 *db;
+
+	int rc;
+
+	rc = sqlite3_open("medicalDB.db", &db);
+
+	if( rc ) {
+		cout << "Can't open database: " << endl;
+	} else {
+		cout << "Opened database successfully" << endl;
+	}
+
+	DataBase database;
+	database.set_database(db);
+
 	string choix;
 
-	/*cout << "Que voulez vous faire ?" << endl;
+	cout << "Que voulez vous faire ?" << endl;
 	cout << "Pour créer un patient, entrez : Create" << endl;
 	cout << "Pour afficher les informations concernant un patient, entrez : Afficher patient" << endl;
 	getline(cin,choix);
@@ -31,20 +48,8 @@ int main()
 	}else
 	{
 		cout << "En cours de développement" << endl;
-	}*/
-	   sqlite3 *db;
+	}
 
-	   int rc;
-
-	   rc = sqlite3_open("medicalDB.db", &db);
-
-	   if( rc ) {
-		   cout << "Can't open database: " << endl;
-	   } else {
-		   cout << "Opened database successfully" << endl;
-	   }
-	DataBase database;
-	database.set_database(db);
 
 }
 

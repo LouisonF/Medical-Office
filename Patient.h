@@ -9,6 +9,7 @@
 #define PATIENT_H_
 #include<iostream>
 #include<string>
+#include "DataBase.h"
 
 namespace std {
 
@@ -16,7 +17,7 @@ class Patient {
 public:
 	//Attributs
 	//Méthodes
-	Patient();
+	Patient(sqlite3*);
 	virtual ~Patient();
 
 	void afficher_info_patient();
