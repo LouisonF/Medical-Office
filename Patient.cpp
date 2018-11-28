@@ -23,6 +23,34 @@ Patient::~Patient() {
 	// TODO Auto-generated destructor stub
 }
 
+
+
+void Patient::set(string var, string val){
+	if (var == "num_secu")
+		num_secu = val;
+	else if (var == "nom")
+		nom = val;
+	else if (var == "prenom")
+		prenom = val;
+	else if (var == "date_naissance")
+		date_naissance = val;
+	else if (var == "tel")
+		tel = val;
+	else if (var == "adresse")
+		adresse = val;
+	else if (var == "medecin")
+		medecin = val;
+}
+
+int Patient::affichage_sql(void *NotUsed, int argc, char **argv, char **azColName) {
+	int i;
+	for(i = 0; i<argc; i++) {
+		//set(azColName[i], argv[i]);
+	}
+	cout << endl;
+	return 0;
+}
+
 void Patient::afficher_info_patient()
 {
 	int rc;
@@ -69,7 +97,7 @@ void Patient::sauvegarder_dossier()
 {
 	char *ErrMsg;
 	int rc;
-
+	int reponse;
 	int error;
 	//requete sql
 	/* Create SQL statement */
@@ -91,23 +119,34 @@ void Patient::sauvegarder_dossier()
 		error = -1;
 	}
 	while (error == 1555){
-		cout << "Le numéro de sécurité social existe déjà, veuillez en rentrer un nouveau svp" << endl;
-		cin >> num_secu;
+		cout << "Le numéro de sécurité social existe déjà." << endl;
+		cout << "Tapez 1 pour en rentrer un nouveau ou 2 pour modifier le dossier du patient correspondant" << endl;
+		cin >> reponse;
+		switch (reponse){
+		case 1:
+			cout << "Entrez un nouveau numéro de sécurité sociale svp";
+			cin >> num_secu;
 
-		sql = "INSERT INTO PATIENT (num_secu,nom,prenom,date_naissance,tel,adresse,medecin) "  \
-				"VALUES ('"+num_secu+"','" +nom+"','"+prenom+"','"+date_naissance+"','"+tel+"','"+adresse+"','"+medecin+"')";
+			sql = "INSERT INTO PATIENT (num_secu,nom,prenom,date_naissance,tel,adresse,medecin) "  \
+					"VALUES ('"+num_secu+"','" +nom+"','"+prenom+"','"+date_naissance+"','"+tel+"','"+adresse+"','"+medecin+"')";
 
-		rc = sqlite3_exec(db, sql.c_str(), affichage_sql,0, &ErrMsg);
+			rc = sqlite3_exec(db, sql.c_str(), affichage_sql,0, &ErrMsg);
 
-		if( rc != SQLITE_OK ){
-			cerr << "SQL error: " <<  ErrMsg <<endl;
-			error = sqlite3_extended_errcode(db);
-			sqlite3_free(ErrMsg);
-		} else
-		{
-			cout << "Patient file created successfully" << endl;
-			error = -1;
+			if( rc != SQLITE_OK ){
+				cerr << "SQL error: " <<  ErrMsg <<endl;
+				error = sqlite3_extended_errcode(db);
+				sqlite3_free(ErrMsg);
+			} else
+			{
+				cout << "Patient file created successfully" << endl;
+				error = -1;
+			}
+			break;
+		case 2:
+			maj_patient();
 		}
+
+
 	}
 }
 void Patient::remplir_patient()
@@ -135,6 +174,27 @@ void Patient::remplir_patient()
 
 	cout << "Entrez l'adresse du patient svp" << endl;
 	cin >> adresse;
+}
+
+void Patient::maj_patient(){
+	int reponse;
+	cout << "Que voulez vous mettre à jour ? Tapez le numéro correspondant au champ : " << endl;
+	cout << "1 - Nom" << endl;
+	cout << "2 - Prénom" << endl;
+	cout << "3 - Date de naissance" << endl;
+	cout << "4 - Numéro de téléphone" << endl;
+	cout << "5 - Médecin traitant" << endl;
+	cout << "6 - Numéro de sécurité sociale" << endl;
+	cout << "7 - Groupe sanguin" << endl;
+	cout << "8 - Adresse" << endl;
+	cin >> reponse;
+
+	switch (reponse){
+	case 1 :
+		cout << "Entrez le nom du patient svp" << endl;
+		cin >> nom;
+		update_db("PATIENT", "nom", nom, "num_secu", num_secu);
+	}
 }
 
 }
