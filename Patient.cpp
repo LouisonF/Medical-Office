@@ -13,7 +13,7 @@
 
 namespace std {
 
-Patient::Patient(sqlite3* db) : db(db) {
+Patient::Patient(sqlite3* db, DataBase database) : db(db), database(database) {
 	// TODO Auto-generated constructor stub
 
 }
@@ -63,11 +63,12 @@ void Patient::afficher_presciption()
 void Patient::sauvegarder_dossier()
 {
 	char *ErrMsg;
+	int rc;
 
 	//requete sql
 	string sql = "INSERT INTO PATIENT ("+num_secu+","+nom+","+prenom+","+date_naissance+","+tel+","+adresse+","+medecin+")";
 	/* Execution de la requete SQL*/
-		   rc = sqlite3_exec(db, sql.c_str(), afficher_sql, (void*)data, &ErrMsg);
+		   rc = sqlite3_exec(db, sql.c_str(), DataBase::affichage_sql,0, &ErrMsg);
 
 			if( rc != SQLITE_OK ){
 			      cerr << "SQL error: " <<  ErrMsg <<endl;
