@@ -31,15 +31,16 @@ void Prescription::sauvegarder_pres()
 
 	int error;
 	string temp_medic;
+	string final_list = "";
 
 	/* Création de la requete SQL */
     for(auto i=0; i<liste_medic.size(); i++)
     {
     	vector<string> temp_list;
     	temp_list = liste_medic[i];
-    	for(auto j=0; j<temp_list.size(); j++)
+    	for(auto j=0; j<3; j++)
     	{
-    		if(j == 2)
+    		if(j >= 2)
     		{
     			temp_medic += temp_list.at(j);
     		}else
@@ -48,8 +49,15 @@ void Prescription::sauvegarder_pres()
     		}
 
     	}
-    	cout << "Medicament : " << temp_medic << endl;
+    	if(i != liste_medic.size()-1)
+    	{
+    		temp_medic += ",";
+    	}
 
+    }
+    final_list+= temp_medic;
+
+    cout << final_list << endl;
 
     string sql = "INSERT INTO PRESCRIPTION (prescripteur,date_delivrance,liste_medic,nom,prenom,num_secu) "  \
 			"VALUES ('"+prescripteur+"','" +date_delivrance+"','" +temp_medic+"','"+nom+"','"+prenom+"','"+num_secu+"')";
@@ -87,14 +95,12 @@ void Prescription::sauvegarder_pres()
 	}
 
 }
-}
 
 void Prescription::remplir_pres()
 {
 	int nbMed;
 	string temp;
-	vector<string> temp_vec;
-	cout << "Médecin prescripteur : ";
+	cout << "Nom du Médecin prescripteur : ";
 	cin >> prescripteur;
 	cout << "Nom du patient : ";
 	cin >> nom;
@@ -107,10 +113,10 @@ void Prescription::remplir_pres()
 	cout << "Nombre de médicament(s) préscrit(s) : ";
 	cin >> nbMed;
 	cout << nbMed << endl;
-	for (int i = 1; i <= nbMed; i++)
+	for (int i = 0; i < nbMed; i++)
 	{
-
-		cout << "Nom du médicament n°" << i << " : ";
+		vector<string> temp_vec;
+		cout << "Nom du médicament n°" << i+1 << " : ";
 		cin >> temp;
 		temp_vec.push_back(temp);
 		cout << "Quantité : ";
@@ -119,7 +125,6 @@ void Prescription::remplir_pres()
 		cout << "Posologie : ";
 		cin >> temp;
 		temp_vec.push_back(temp);
-
 		liste_medic.push_back(temp_vec);
 
 	}
