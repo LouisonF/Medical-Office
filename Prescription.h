@@ -9,6 +9,9 @@
 #define PRESCRIPTION_H_
 #include<iostream>
 #include<string>
+#include<vector>
+#include<stdio.h>
+#include<cstring>
 #include "DataBase.h"
 
 
@@ -20,18 +23,25 @@ public:
 	//Méthodes
 	Prescription();
 	virtual ~Prescription();
+	static int affichage_sql(void *p_data, int argc, char **argv, char **azColName);
+	void afficher_prescription();
 	void sauvegarder_pres();
 	void remplir_pres();
 
 private:
-
-		//Attributs
+	//Attributs
+	struct data_pres
+	{
 		string prescripteur;
 		string date_delivrance;
 		vector<vector<string>> liste_medic;
 		string nom;
 		string prenom;
 		string num_secu;
+	};
+	data_pres data;
+
+
 		//Méthodes
 
 

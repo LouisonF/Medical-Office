@@ -15,22 +15,26 @@ using namespace std;
 
 class Medecin : public DataBase {
 
-private:
-
-	string nom;
-	string prenom;
-	string specialite;
-	string ID;
-
 public:
 
 	Medecin();
 	virtual ~Medecin();
+	static int affichage_sql(void *p_data, int argc, char **argv, char **azColName);
 	void ajouter_medecin();
 	void sauvegarder_medecin();
 	void edition_prescription();
 	void afficher_info_medecin();
-	void afficher_prescription();
+
+private:
+	struct data_med
+	{
+		string nom;
+		string prenom;
+		string specialite;
+		string ID;
+	};
+	data_med data;
+
 };
 
 #endif /* MEDECIN_H_ */
