@@ -25,29 +25,29 @@ Patient::~Patient() {
 
 void Patient::afficher_info_patient()
 {
-	   int rc;
-	   char *ErrMsg;
-	   const char* data = "Callback function called";
-	   string sql = "SELECT * FROM PATIENT";
-	   /*Execute SQL statement*/
-	   rc = sqlite3_exec(db, sql.c_str(), affichage_sql,(void*)data, &ErrMsg);
+	int rc;
+	char *ErrMsg;
+	const char* data = "Callback function called";
+	string sql = "SELECT * FROM PATIENT";
+	/*Execute SQL statement*/
+	rc = sqlite3_exec(db, sql.c_str(), affichage_sql,(void*)data, &ErrMsg);
 
-		if( rc != SQLITE_OK ){
-		      cerr << "SQL error: " <<  ErrMsg <<endl;
-		      cout << sqlite3_extended_errcode(db) << endl;
-		      sqlite3_free(ErrMsg);
-		} else
-		{
-			cout << "Here is the patient file" << endl;
-		}
-	   /*TODO: Vérifier la taille de ce qui est sortit par la requete.
+	if( rc != SQLITE_OK ){
+		cerr << "SQL error: " <<  ErrMsg <<endl;
+		cout << sqlite3_extended_errcode(db) << endl;
+		sqlite3_free(ErrMsg);
+	} else
+	{
+		cout << "Here is the patient file" << endl;
+	}
+	/*TODO: Vérifier la taille de ce qui est sortit par la requete.
 	   	   	   Si >1, alors refaire la requete avec la date de naissance*/
 
 }
 
 void Patient::afficher_presciption()
 {
-	   /*string sql = "SELECT * FROM PRESCRIPTION WHERE Nom "+nom+"AND Prenom"+prenom;
+	/*string sql = "SELECT * FROM PRESCRIPTION WHERE Nom "+nom+"AND Prenom"+prenom;
 	   /* Execute SQL statement
 	   rc = sqlite3_exec(db, sql.c_str(), afficher_sql, (void*)data, &ErrMsg);
 
@@ -70,24 +70,45 @@ void Patient::sauvegarder_dossier()
 	char *ErrMsg;
 	int rc;
 
+	int error;
 	//requete sql
-	 /* Create SQL statement */
+	/* Create SQL statement */
 
 
 
 	string sql = "INSERT INTO PATIENT (num_secu,nom,prenom,date_naissance,tel,adresse,medecin) "  \
-	         	 "VALUES ('"+num_secu+"','" +nom+"','"+prenom+"','"+date_naissance+"','"+tel+"','"+adresse+"','"+medecin+"')";
+			"VALUES ('"+num_secu+"','" +nom+"','"+prenom+"','"+date_naissance+"','"+tel+"','"+adresse+"','"+medecin+"')";
 	/* Execution de la requete SQL*/
-		   rc = sqlite3_exec(db, sql.c_str(), affichage_sql,0, &ErrMsg);
+	rc = sqlite3_exec(db, sql.c_str(), affichage_sql,0, &ErrMsg);
 
-			if( rc != SQLITE_OK ){
-			      cerr << "SQL error: " <<  ErrMsg <<endl;
-			      cout << sqlite3_extended_errcode(db) << endl;
-			      sqlite3_free(ErrMsg);
-			} else
-			{
-				cout << "Patient file created successfully" << endl;
-			}
+	if( rc != SQLITE_OK ){
+		cerr << "SQL error: " <<  ErrMsg <<endl;
+		error = sqlite3_extended_errcode(db);
+		sqlite3_free(ErrMsg);
+	} else
+	{
+		cout << "Patient file created successfully" << endl;
+		error = -1;
+	}
+	while (error == 1555){
+		cout << "Le numéro de sécurité social existe déjà, veuillez en rentrer un nouveau svp" << endl;
+		cin >> num_secu;
+
+		sql = "INSERT INTO PATIENT (num_secu,nom,prenom,date_naissance,tel,adresse,medecin) "  \
+				"VALUES ('"+num_secu+"','" +nom+"','"+prenom+"','"+date_naissance+"','"+tel+"','"+adresse+"','"+medecin+"')";
+
+		rc = sqlite3_exec(db, sql.c_str(), affichage_sql,0, &ErrMsg);
+
+		if( rc != SQLITE_OK ){
+			cerr << "SQL error: " <<  ErrMsg <<endl;
+			error = sqlite3_extended_errcode(db);
+			sqlite3_free(ErrMsg);
+		} else
+		{
+			cout << "Patient file created successfully" << endl;
+			error = -1;
+		}
+	}
 }
 void Patient::remplir_patient()
 {
