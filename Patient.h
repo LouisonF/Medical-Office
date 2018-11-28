@@ -13,11 +13,11 @@
 
 namespace std {
 
-class Patient {
+class Patient : public DataBase{
 public:
 	//Attributs
 	//Méthodes
-	Patient(sqlite3* db, DataBase database);
+	Patient();
 	virtual ~Patient();
 
 	void afficher_info_patient();
@@ -27,8 +27,6 @@ public:
 
 private:
 	//Attributs
-	sqlite3* db;
-	DataBase database;
 	string nom;
 	string prenom;
 	string date_naissance;

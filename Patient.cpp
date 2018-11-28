@@ -13,7 +13,8 @@
 
 namespace std {
 
-Patient::Patient(sqlite3* db, DataBase database) : db(db), database(database) {
+Patient::Patient()
+{
 	// TODO Auto-generated constructor stub
 
 }
@@ -25,19 +26,23 @@ Patient::~Patient() {
 void Patient::afficher_info_patient()
 {
 	   int rc;
-	   string sql = "SELECT * FROM PATIENT WHERE Nom "+nom+"AND Prenom"+prenom;
-	    Execute SQL statement
-	   rc = sqlite3_exec(db, sql.c_str(), afficher_sql, (void*)data, &ErrMsg);
+	   char *ErrMsg;
+	   const char* data = "Callback function called";
+	   string sql = "SELECT * FROM PATIENT";
+	   /*Execute SQL statement*/
+	   rc = sqlite3_exec(db, sql.c_str(), affichage_sql,(void*)data, &ErrMsg);
 
-	   if( rc ) {
-		   cout << "Can't open database: " << endl;
-	   } else {
-		   cout << "Opened database successfully" << endl;
-	   }
+		if( rc != SQLITE_OK ){
+		      cerr << "SQL error: " <<  ErrMsg <<endl;
+		      cout << sqlite3_extended_errcode(db) << endl;
+		      sqlite3_free(ErrMsg);
+		} else
+		{
+			cout << "Here is the patient file" << endl;
+		}
 	   /*TODO: Vérifier la taille de ce qui est sortit par la requete.
 	   	   	   Si >1, alors refaire la requete avec la date de naissance*/
 
-	   cout << rc << endl;
 }
 
 void Patient::afficher_presciption()
@@ -66,16 +71,22 @@ void Patient::sauvegarder_dossier()
 	int rc;
 
 	//requete sql
-	string sql = "INSERT INTO PATIENT ("+num_secu+","+nom+","+prenom+","+date_naissance+","+tel+","+adresse+","+medecin+")";
+	 /* Create SQL statement */
+
+
+
+	string sql = "INSERT INTO PATIENT (num_secu,nom,prenom,date_naissance,tel,adresse,medecin) "  \
+	         	 "VALUES ('"+num_secu+"','" +nom+"','"+prenom+"','"+date_naissance+"','"+tel+"','"+adresse+"','"+medecin+"')";
 	/* Execution de la requete SQL*/
-		   rc = sqlite3_exec(db, sql.c_str(), DataBase::affichage_sql,0, &ErrMsg);
+		   rc = sqlite3_exec(db, sql.c_str(), affichage_sql,0, &ErrMsg);
 
 			if( rc != SQLITE_OK ){
 			      cerr << "SQL error: " <<  ErrMsg <<endl;
 			      cout << sqlite3_extended_errcode(db) << endl;
 			      sqlite3_free(ErrMsg);
-			} else {
-				cout << "Table created successfully" << endl;
+			} else
+			{
+				cout << "Patient file created successfully" << endl;
 			}
 }
 void Patient::remplir_patient()
@@ -89,11 +100,11 @@ void Patient::remplir_patient()
 	cout << "Entrez la date de naissance du patient svp" << endl;
 	cin >> date_naissance;
 
-	cout << "Entrez le numéro de téléphone du patiet svp" << endl;
+	cout << "Entrez le numéro de téléphone du patient svp" << endl;
 	cin >> tel;
 
 	cout << "Entrez le nom du médecin traitant svp" << endl;
-	getline(cin,medecin);
+	cin >> medecin;
 
 	cout << "Entrez le numéro de sécurité sociale du patient svp" << endl;
 	cin >> num_secu;
