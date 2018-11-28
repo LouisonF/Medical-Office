@@ -26,26 +26,102 @@ Prescription::~Prescription()
 void Prescription::sauvegarder_pres()
 {
 
+	char *ErrMsg;
+	int rc;
+
+	int error;
+	string temp_medic;
+
+	/* Création de la requete SQL */
+    for(auto i=0; i<liste_medic.size(); i++)
+    {
+    	vector<string> temp_list;
+    	temp_list = liste_medic[i];
+    	for(auto j=0; j<temp_list.size(); j++)
+    	{
+    		if(j == 2)
+    		{
+    			temp_medic += temp_list.at(j);
+    		}else
+    		{
+            	temp_medic += temp_list.at(j)+":";
+    		}
+
+    	}
+    	cout << "Medicament : " << temp_medic << endl;
+
+
+    string sql = "INSERT INTO PRESCRIPTION (prescripteur,date_delivrance,liste_medic,nom,prenom,num_secu) "  \
+			"VALUES ('"+prescripteur+"','" +date_delivrance+"','" +temp_medic+"','"+nom+"','"+prenom+"','"+num_secu+"')";
+	/* Execution de la requete SQL*/
+
+	rc = sqlite3_exec(db, sql.c_str(), affichage_sql,0, &ErrMsg);
+
+	if( rc != SQLITE_OK ){
+		cerr << "SQL error: " <<  ErrMsg <<endl;
+		error = sqlite3_extended_errcode(db);
+		sqlite3_free(ErrMsg);
+	} else
+	{
+		cout << "Prescription crée avec succès" << endl;
+		error = -1;
+	}
+	while (error == 1555){
+		cout << "Le numéro de sécurité social existe déjà, veuillez en rentrer un nouveau svp" << endl;
+		cin >> num_secu;
+
+		 sql = "INSERT INTO PRESCRIPTION (prescripteur,date_delivrance,liste_medic,nom,prenom,num_secu) "  \
+					"VALUES ('"+prescripteur+"','" +date_delivrance+"','" +temp_medic+"','"+nom+"','"+prenom+"','"+num_secu+"')";
+
+		rc = sqlite3_exec(db, sql.c_str(), affichage_sql,0, &ErrMsg);
+
+		if( rc != SQLITE_OK ){
+			cerr << "SQL error: " <<  ErrMsg <<endl;
+			error = sqlite3_extended_errcode(db);
+			sqlite3_free(ErrMsg);
+		} else
+		{
+			cout << "Prescription crée avec succès" << endl;
+			error = -1;
+		}
+	}
+
+}
 }
 
 void Prescription::remplir_pres()
 {
 	int nbMed;
-	cout << "Médecin préscripteur : ";
+	string temp;
+	vector<string> temp_vec;
+	cout << "Médecin prescripteur : ";
 	cin >> prescripteur;
-	cout << "Patient : ";
-	cin >> patient;
+	cout << "Nom du patient : ";
+	cin >> nom;
+	cout << "Prénom du patient : ";
+	cin >> prenom;
+	cout << "numéro de sécurité sociale du patient";
+	cin >> num_secu;
 	cout << "Date de délivrance : ";
 	cin >> date_delivrance;
 	cout << "Nombre de médicament(s) préscrit(s) : ";
 	cin >> nbMed;
-	for (int i = 1; i <= nbMed; i++){
+	cout << nbMed << endl;
+	for (int i = 1; i <= nbMed; i++)
+	{
+
 		cout << "Nom du médicament n°" << i << " : ";
-		cin >> liste_medic[i-1][0];
+		cin >> temp;
+		temp_vec.push_back(temp);
 		cout << "Quantité : ";
-		cin >> liste_medic[i-1][1];
+		cin >> temp;
+		temp_vec.push_back(temp);
 		cout << "Posologie : ";
-		cin >> liste_medic[i-1][2];
+		cin >> temp;
+		temp_vec.push_back(temp);
+
+		liste_medic.push_back(temp_vec);
+
 	}
 }
 

@@ -9,10 +9,11 @@
 #define MEDECIN_H_
 #include<iostream>
 #include<string>
+#include "DataBase.h"
 
 using namespace std;
 
-class Medecin {
+class Medecin : public DataBase {
 
 private:
 
@@ -26,6 +27,7 @@ public:
 	Medecin();
 	virtual ~Medecin();
 	void ajouter_medecin();
+	void sauvegarder_medecin();
 	void edition_prescription();
 	void afficher_info_medecin();
 	void afficher_prescription();

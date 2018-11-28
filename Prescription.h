@@ -31,7 +31,7 @@ private:
 		vector<vector<string>> liste_medic;
 		string nom;
 		string prenom;
-		string date_naissance;
+		string num_secu;
 		//Méthodes
 
 
