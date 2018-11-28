@@ -20,7 +20,6 @@ public:
 	Patient();
 	virtual ~Patient();
 
-	void set(string var, string val);
 	static int affichage_sql(void*, int, char**, char**);
 	void afficher_info_patient();
 	void afficher_presciption();
@@ -30,14 +29,24 @@ public:
 
 private:
 	//Attributs
-	string nom;
-	string prenom;
-	string date_naissance;
-	string tel;
-	string medecin;
-	string num_secu;
-	string grp_sanguin;
-	string adresse;
+	struct datas
+	{
+		string nom;
+		string prenom;
+		string date_naissance;
+		string tel;
+		string medecin;
+		string num_secu;
+		string grp_sanguin;
+		string adresse;
+	};
+
+	typedef int (*sqlite3_afficher_sql)(
+	   void*,    /* Data provided in the 4th argument of sqlite3_exec() */
+	   int,      /* The number of columns in row */
+	   char**,   /* An array of strings representing fields in the row */
+	   char**    /* An array of strings representing column names */
+	);
 	//Méthodes
 
 

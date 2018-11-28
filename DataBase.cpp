@@ -142,7 +142,7 @@ void DataBase::update_db(string table, string champ, string val, string ID_champ
 	const char* data = "Callback function called";
 	int error;
 
-	sql = "UPDATE "+table+" set "+champ+" = '"+val+"' where "+ID_champ+"="+ID_val+"; ";
+	sql = "UPDATE "+table+" set "+champ+" = '"+val+"' where "+ID_champ+"='"+ID_val+"'; ";
 
 	/* Execute SQL statement */
 	rc = sqlite3_exec(db, sql.c_str(), affichage_sql, (void*)data, &ErrMsg);
