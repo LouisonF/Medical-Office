@@ -89,8 +89,7 @@ void DataBase::set_database(){
 			"liste_medic	    TEXT    	NOT NULL," \
 			"nom			    TEXT    	NOT NULL," \
 			"prenom			    TEXT    	NOT NULL," \
-			"num_secu			INTEGER    	NOT NULL," \
-			"date_naissance   	TEXT 		NOT NULL);";
+			"num_secu			INTEGER    	NOT NULL);";
 
 	/* Execute SQL statement */
 	rc = sqlite3_exec(db, sql, affichage_sql, 0, &ErrMsg);

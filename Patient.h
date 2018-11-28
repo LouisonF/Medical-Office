@@ -41,6 +41,7 @@ private:
 		string adresse;
 	};
 
+	datas _data;
 	typedef int (*sqlite3_afficher_sql)(
 	   void*,    /* Data provided in the 4th argument of sqlite3_exec() */
 	   int,      /* The number of columns in row */
