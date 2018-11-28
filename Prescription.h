@@ -9,11 +9,12 @@
 #define PRESCRIPTION_H_
 #include<iostream>
 #include<string>
+#include "DataBase.h"
 
 
 using namespace std;
 #include<vector>
-class Prescription {
+class Prescription : public DataBase{
 public:
 	//Atributs
 	//Méthodes
