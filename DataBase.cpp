@@ -46,7 +46,7 @@ void DataBase::set_database(){
 	int rc;
 
 	sql = "CREATE TABLE if not exists PATIENT("  \
-			"num_secu TEXT PRIMARY KEY  	NOT NULL," \
+			"num_secu INTEGER PRIMARY KEY  	NOT NULL," \
 			"nom           		TEXT    	NOT NULL," \
 			"prenom           	TEXT    	NOT NULL," \
 			"date_naissance   	TEXT 		NOT NULL," \
@@ -89,7 +89,7 @@ void DataBase::set_database(){
 			"liste_medic	    TEXT    	NOT NULL," \
 			"nom			    TEXT    	NOT NULL," \
 			"prenom			    TEXT    	NOT NULL," \
-			"num_secu			TEXT    	NOT NULL," \
+			"num_secu			INTEGER    	NOT NULL," \
 			"date_naissance   	TEXT 		NOT NULL);";
 
 	/* Execute SQL statement */
@@ -111,17 +111,17 @@ void DataBase::insert_test_values(){
 	int rc;
 	// Insertion de valeurs pour tester le programme
 	sql = "INSERT INTO PATIENT (num_secu,nom,prenom,date_naissance,tel,adresse,medecin) "  \
-			"VALUES ('78965', 'COURTIN', 'François', '19/02/1996', '0612121212', '3 rue Pierre Martin', 'COURTIN' ); " \
+			"VALUES (78965, 'COURTIN', 'François', '19/02/1996', '0612121212', '3 rue Pierre Martin', 'COURTIN' ); " \
 			"INSERT INTO MEDECIN (ID,nom,prenom,specialite) "  \
-			"VALUES ('45', 'COURTIN', 'Olivier', 'Anesthésiste'); "     \
+			"VALUES (45, 'COURTIN', 'Olivier', 'Anesthésiste'); "     \
 			"INSERT INTO PRESCRIPTION (ID,prescripteur,date_delivrance,liste_medic,nom,prenom,num_secu,date_naissance)" \
-			"VALUES ('466', 'COURTIN', '12/12/2012', 'Paracétamol:1 boîte:3/jour;Ibuprophène:1 boîte:3/jour;', 'COURTIN', 'François', '65465454', '19/02/1996' );" \
+			"VALUES (466, 'COURTIN', '12/12/2012', 'Paracétamol:1 boîte:3/jour;Ibuprophène:1 boîte:3/jour;', 'COURTIN', 'François', '65465454', '19/02/1996' );" \
 			"INSERT INTO PATIENT (num_secu,nom,prenom,date_naissance,tel,adresse,medecin) "  \
-			"VALUES ('123564', 'FRESNAIS', 'Louison', '01/06/1996', '0613131313', '2 rue Félix Martin', 'CLAYSSEN' ); " \
+			"VALUES (123564, 'FRESNAIS', 'Louison', '01/06/1996', '0613131313', '2 rue Félix Martin', 'CLAYSSEN' ); " \
 			"INSERT INTO MEDECIN (ID,nom,prenom,specialite) "  \
-			"VALUES ('78', 'CLAYSSEN', 'Quentin', 'Généraliste'); "     \
+			"VALUES (78, 'CLAYSSEN', 'Quentin', 'Généraliste'); "     \
 			"INSERT INTO PRESCRIPTION (ID,prescripteur,date_delivrance,liste_medic,nom,prenom,num_secu,date_naissance)" \
-			"VALUES ('79', 'CLAYSSEN', '13/13/2013', 'Paracétamol:1 boîte:3/jour;Ibuprophène:1 boîte:3/jour;', 'FRESNAIS', 'Louison', '635465435214', '01/06/1996' );";
+			"VALUES (79, 'CLAYSSEN', '13/13/2013', 'Paracétamol:1 boîte:3/jour;Ibuprophène:1 boîte:3/jour;', 'FRESNAIS', 'Louison', '635465435214', '01/06/1996' );";
 
 	/* Execute SQL statement */
 	rc = sqlite3_exec(db, sql, affichage_sql, 0, &ErrMsg);
