@@ -20,7 +20,15 @@ DataBase::~DataBase() {
 }
 
 void DataBase::connect_database(){
+	int rc;
 
+	rc = sqlite3_open("medicalDB.db", &db);
+
+	if( rc ) {
+		cout << "Can't open database: " << endl;
+	} else {
+		cout << "Opened database successfully" << endl;
+	}
 }
 
 int DataBase::affichage_sql(void *NotUsed, int argc, char **argv, char **azColName) {
@@ -32,7 +40,7 @@ int DataBase::affichage_sql(void *NotUsed, int argc, char **argv, char **azColNa
 	return 0;
 }
 
-void DataBase::set_database(sqlite3 *db){
+void DataBase::set_database(){
 	char* sql;
 	char *ErrMsg;
 	int rc;
@@ -96,7 +104,7 @@ void DataBase::set_database(sqlite3 *db){
 
 }
 
-void DataBase::insert_test_values(sqlite3* db){
+void DataBase::insert_test_values(){
 	char* sql;
 	char *ErrMsg;
 	int rc;
