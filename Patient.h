@@ -17,7 +17,7 @@ class Patient {
 public:
 	//Attributs
 	//Méthodes
-	Patient(sqlite3*);
+	Patient(sqlite3* db, DataBase database);
 	virtual ~Patient();
 
 	void afficher_info_patient();
@@ -27,6 +27,8 @@ public:
 
 private:
 	//Attributs
+	sqlite3* db;
+	DataBase database;
 	string nom;
 	string prenom;
 	string date_naissance;

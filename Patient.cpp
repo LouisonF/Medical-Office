@@ -24,9 +24,9 @@ Patient::~Patient() {
 
 void Patient::afficher_info_patient()
 {
-	  /* int rc;
+	   int rc;
 	   string sql = "SELECT * FROM PATIENT WHERE Nom "+nom+"AND Prenom"+prenom;
-	   /* Execute SQL statement
+	    Execute SQL statement
 	   rc = sqlite3_exec(db, sql.c_str(), afficher_sql, (void*)data, &ErrMsg);
 
 	   if( rc ) {
@@ -35,9 +35,9 @@ void Patient::afficher_info_patient()
 		   cout << "Opened database successfully" << endl;
 	   }
 	   /*TODO: Vérifier la taille de ce qui est sortit par la requete.
-	   	   	   Si >1, alors refaire la requete avec la date de naissance
+	   	   	   Si >1, alors refaire la requete avec la date de naissance*/
 
-	   cout << rc << endl;*/
+	   cout << rc << endl;
 }
 
 void Patient::afficher_presciption()
