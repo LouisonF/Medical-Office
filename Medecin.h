@@ -20,9 +20,11 @@ public:
 	Medecin();
 	virtual ~Medecin();
 	static int affichage_sql(void *p_data, int argc, char **argv, char **azColName);
+	static int affichage_all_sql(void *p_data, int argc, char **argv, char **azColName);
 	void ajouter_medecin();
 	void sauvegarder_medecin();
 	void afficher_info_medecin();
+	void afficher_info_all_medecin();
 
 private:
 	struct data_med
