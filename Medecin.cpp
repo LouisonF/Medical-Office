@@ -133,9 +133,8 @@ void Medecin::sauvegarder_medecin()
 
 }
 
-void Prescription::edition_medecin()
+void Medecin::edition_medecin()
 {
-	data_med data;
 	int reponse;
 
 	cout << "Entrez l'ID du médecin à mettre à jour, cf Affichage de la fiche medecin : ";

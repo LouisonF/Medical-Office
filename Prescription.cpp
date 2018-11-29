@@ -258,7 +258,6 @@ void Prescription::remplir_pres()
 
 void Prescription::edition_prescription()
 {
-	data_pres data;
 	int reponse;
 	/*Variables for the list_medic handling*/
 	int nbMed;
