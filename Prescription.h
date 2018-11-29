@@ -24,7 +24,9 @@ public:
 	Prescription();
 	virtual ~Prescription();
 	static int affichage_sql(void *p_data, int argc, char **argv, char **azColName);
+	static int affichage_all_sql(void *p_data, int argc, char **argv, char **azColName);
 	void afficher_prescription();
+	void afficher_all_prescription();
 	void sauvegarder_pres();
 	void remplir_pres();
 	void edition_prescription();

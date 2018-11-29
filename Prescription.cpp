@@ -36,6 +36,31 @@ int Prescription::affichage_sql(void *p_data, int argc, char **argv, char **azCo
 			data->date_delivrance = argv[i];
 		else if (strcmp(azColName[i],"num_secu") == 0)
 			data->num_secu = argv[i];
+		else if (strcmp(azColName[i],"liste_medic") == 0)
+			cout << "Liste de médicaments: " << argv[i] <<endl;
+
+	}
+	return 0;
+}
+int Prescription::affichage_all_sql(void *p_data, int argc, char **argv, char **azColName)
+{
+	int i;
+
+	for(i = 0; i<argc; i++) {
+		if (strcmp(azColName[i],"ID") == 0)
+			cout << "ID : " << argv[i] <<endl;
+		else if (strcmp(azColName[i],"nom") == 0)
+			cout << "Nom : " << argv[i] <<endl;
+		else if (strcmp(azColName[i],"prenom") == 0)
+			cout << "Prénom : " << argv[i] <<endl;
+		else if (strcmp(azColName[i],"prescripteur") == 0)
+			cout << "Nom du prescripteur : " << argv[i] <<endl;
+		else if (strcmp(azColName[i],"date_delivrance") == 0)
+			cout << "Date de délivrance : " << argv[i] <<endl;
+		else if (strcmp(azColName[i],"num_secu") == 0)
+			cout << "Numéro de sécurité sociale : " << argv[i] <<endl;
+		else if (strcmp(azColName[i],"liste_medic") == 0)
+			cout << "Liste de médicaments: " << argv[i] <<endl;
 
 	}
 	return 0;
@@ -46,6 +71,8 @@ void Prescription::afficher_prescription()
 	char *ErrMsg;
 	string num_secu;
 	string ID;
+	string temp_medic;
+	string final_list;
 	while(num_secu == "")
 	{
 		cout << "Entrez le numéro de sécurité sociale du patient svp" << endl;
@@ -69,9 +96,57 @@ void Prescription::afficher_prescription()
 	cout << "ID : " << data.ID << endl;// TODO: L'ID renvoyé est vide
 	cout << "Nom du medecin : " << data.prescripteur << endl;
 	cout << "Date de délivrance de l'ordonnance : " << data.date_delivrance << endl;
+    for(auto i=0; i<data.liste_medic.size(); i++)
+    {
+    	vector<string> temp_list;
+    	temp_list = data.liste_medic[i];
+    	for(auto j=0; j<3; j++)
+    	{
+    		if(j >= 2)
+    		{
+    			temp_medic += temp_list.at(j);
+    		}else
+    		{
+            	temp_medic += temp_list.at(j)+":";
+    		}
+
+    	}
+    	if(i != data.liste_medic.size()-1)
+    	{
+    		temp_medic += ",";
+    	}
+
+    }
+    final_list+= temp_medic;
+    cout << "Liste des médicaments " << final_list <<endl;
 	cout << "Nom : " << data.nom<< endl;
 	cout << "Prénom : " << data.prenom<< endl;
 	cout << "Numéro de sécurité sociale : " << data.num_secu << endl;
+
+}
+void Prescription::afficher_all_prescription()
+{
+	int rc;
+	char *ErrMsg;
+	string num_secu;
+	string ID;
+	while(num_secu == "")
+	{
+		cout << "Entrez le numéro de sécurité sociale du patient svp" << endl;
+		cin >> num_secu;
+	}
+	string sql = "SELECT * FROM PRESCRIPTION WHERE num_secu = "+num_secu+";";
+	/*Execute SQL statement*/
+	rc = sqlite3_exec(db, sql.c_str(), affichage_all_sql,0, &ErrMsg);
+
+	if( rc != SQLITE_OK )
+	{
+		cerr << "SQL error: " <<  ErrMsg <<endl;
+		cout << sqlite3_extended_errcode(db) << endl;
+		sqlite3_free(ErrMsg);
+	}
+	/*TODO: Vérifier la taille de ce qui est sortit par la requete.
+	   	   	   Si >1, alors refaire la requete avec la date de naissance*/
 
 }
 void Prescription::sauvegarder_pres()
@@ -158,7 +233,7 @@ void Prescription::remplir_pres()
 	cin >> data.prenom;
 	cout << "numéro de sécurité sociale du patient";
 	cin >> data.num_secu;
-	cout << "Date de délivrance : ";
+	cout << "Date de délivrance(jj/mm/aaaa) : ";
 	cin >> data.date_delivrance;
 	cout << "Nombre de médicament(s) préscrit(s) : ";
 	cin >> nbMed;
@@ -209,7 +284,7 @@ void Prescription::edition_prescription()
 		update_db("PRESCRIPTION", "prescripteur", data.prescripteur, "ID", data.ID);
 		break;
 	case 2 :
-		cout << "Entrez la nouvelle date de délivrance" << endl;
+		cout << "Entrez la nouvelle date de délivrance(jj/mm/aaaa)" << endl;
 		cin >> data.date_delivrance;
 		update_db("PRESCRIPTION", "date_delivrance", data.date_delivrance, "ID", data.ID);
 		break;
@@ -271,7 +346,7 @@ void Prescription::edition_prescription()
 	case 6 :
 		cout << "Entrez le numéro de sécurité sociale du patient svp" << endl;
 		cin >> data.num_secu;
-		update_db("PRESCRIPTION", "nom", data.num_secu, "ID", data.ID);
+		update_db("PRESCRIPTION", "num_secu", data.num_secu, "ID", data.ID);
 		break;
 
 	}
