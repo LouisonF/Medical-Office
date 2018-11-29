@@ -22,10 +22,10 @@ public:
 
 	static int affichage_sql(void*, int, char**, char**);
 	static int all_patient_affichage_sql(void*, int, char**, char**);
-	void afficher_info_patient();
+	void afficher_info_patient(int);
 	void sauvegarder_dossier();
 	void remplir_patient();
-	void maj_patient();
+	void maj_patient(bool);
 
 private:
 	//Attributs
