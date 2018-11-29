@@ -44,7 +44,14 @@ void Prescription::afficher_prescription()
 {
 	int rc;
 	char *ErrMsg;
-	string sql = "SELECT * FROM PRESCRIPTION";
+	string num_secu;
+	string ID;
+	while(num_secu == "")
+	{
+		cout << "Entrez le numéro de sécurité sociale du patient svp" << endl;
+		cin >> num_secu;
+	}
+	string sql = "SELECT * FROM PRESCRIPTION WHERE num_secu = "+num_secu+";";
 	/*Execute SQL statement*/
 	rc = sqlite3_exec(db, sql.c_str(), affichage_sql,&data, &ErrMsg);
 
