@@ -21,8 +21,8 @@ public:
 	virtual ~Patient();
 
 	static int affichage_sql(void*, int, char**, char**);
+	static int all_patient_affichage_sql(void*, int, char**, char**);
 	void afficher_info_patient();
-	void afficher_presciption();
 	void sauvegarder_dossier();
 	void remplir_patient();
 	void maj_patient();
