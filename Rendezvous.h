@@ -16,7 +16,7 @@ class Rendez_vous : public DataBase{
 public:
 	Rendez_vous();
 	virtual ~Rendez_vous();
-	int affichage_all_sql(void *p_data, int argc, char **argv, char **azColName);
+	static int affichage_all_sql(void *p_data, int argc, char **argv, char **azColName);
 	void afficher_rendez_vous();
 	void ajouter_rdv();
 	void creer_rendez_vous();
