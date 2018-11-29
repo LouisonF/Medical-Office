@@ -72,9 +72,10 @@ void Rendez_vous::afficher_rendez_vous()
 
 		if(date == "aucune")
 		{
-			string sql = "SELECT * FROM RENDEZ_VOUS WHERE nom = '"+nom_medecin+"' AND prenom='"+prenom_medecin+"';";
+			string sql = "SELECT * FROM RENDEZ_VOUS WHERE nom_medecin = '"+nom_medecin+"' AND prenom_medecin='"+prenom_medecin+"';";
 			/*Execute SQL statement*/
 			rc = sqlite3_exec(db, sql.c_str(), affichage_all_sql,0, &ErrMsg);
+
 
 			if( rc != SQLITE_OK )
 			{
@@ -84,9 +85,10 @@ void Rendez_vous::afficher_rendez_vous()
 			}
 		}else
 		{
-			string sql = "SELECT * FROM RENDEZ_VOUS WHERE nom = '"+nom_medecin+"' AND prenom='"+prenom_medecin+"' AND date='"+date+"';";
+			string sql = "SELECT * FROM RENDEZ_VOUS WHERE nom_medecin = '"+nom_medecin+"' AND prenom_medecin='"+prenom_medecin+"' AND date='"+date+"';";
 			/*Execute SQL statement*/
 			rc = sqlite3_exec(db, sql.c_str(), affichage_all_sql,0, &ErrMsg);
+
 
 			if( rc != SQLITE_OK )
 			{
@@ -106,6 +108,7 @@ void Rendez_vous::afficher_rendez_vous()
 			/*Execute SQL statement*/
 			rc = sqlite3_exec(db, sql.c_str(), affichage_all_sql,0, &ErrMsg);
 
+
 			if( rc != SQLITE_OK )
 			{
 				cerr << "SQL error: " <<  ErrMsg <<endl;
@@ -118,6 +121,7 @@ void Rendez_vous::afficher_rendez_vous()
 			/*Execute SQL statement*/
 			rc = sqlite3_exec(db, sql.c_str(), affichage_all_sql,0, &ErrMsg);
 
+
 			if( rc != SQLITE_OK )
 			{
 				cerr << "SQL error: " <<  ErrMsg <<endl;
@@ -125,6 +129,21 @@ void Rendez_vous::afficher_rendez_vous()
 				sqlite3_free(ErrMsg);
 			}
 		}
+	}
+
+	int choix_edit;
+	cout << "Souhaitez vous modifier un rendez_vous ?" << endl;
+	cout << "1 - oui" << endl;
+	cout << "2 - non" << endl;
+	cin >> choix_edit;
+
+	switch (choix_edit)
+	{
+	case 1:
+		edition_rendez_vous();
+		break;
+	case 2:
+		break;
 	}
 
 

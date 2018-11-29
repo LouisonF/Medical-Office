@@ -73,14 +73,19 @@ void Medecin::afficher_info_medecin()
 	char *ErrMsg;
 	string nom;
 	string prenom;
+	int choix;
 
-	cout << "Entrer le nom du medecin recherché svp";
+	cout << "Entrer le nom du medecin recherché svp" << endl;
 	cin >> nom;
-	cout << "Entrer le prénom du medecin recherché svp";
+	cout << "Entrer le prénom du medecin recherché svp" << endl;
 	cin >> prenom;
 	string sql = "SELECT * FROM MEDECIN WHERE nom = '"+nom+"' AND prenom='"+prenom+"';";
 	/*Execute SQL statement*/
 	rc = sqlite3_exec(db, sql.c_str(), affichage_sql,&data, &ErrMsg);
+	if (nom != data.nom){
+		cout << "Ce medecin n'existe pas" << endl;
+		return;
+	}
 
 	if( rc != SQLITE_OK ){
 		cerr << "SQL error: " <<  ErrMsg <<endl;
@@ -90,15 +95,31 @@ void Medecin::afficher_info_medecin()
 	{
 		cout << "Voici la fiche du medecin demandée" << endl;
 	}
+	cout << "ID : " << data.ID << endl;
 	cout << "Nom  : " << data.nom << endl;
 	cout << "Prénom : " << data.prenom << endl;
-	cout << "Spécialitée : " << data.specialite<< endl;
+	cout << "Spécialitée : " << data.specialite<< endl << endl;
+
+	cout << "Souhaitez vous modifier la fiche de ce médecin ?" << endl;
+	cout << "1 - oui" << endl;
+	cout << "2 - non" << endl;
+	cin >> choix;
+
+	switch (choix)
+	{
+	case 1:
+		edition_medecin();
+		break;
+	case 2:
+		break;
+	}
 }
 
 void Medecin::afficher_info_all_medecin()
 {
 	int rc;
 	char *ErrMsg;
+	int choix;
 
 
 	string sql = "SELECT * FROM MEDECIN;";
@@ -109,6 +130,20 @@ void Medecin::afficher_info_all_medecin()
 		cerr << "SQL error: " <<  ErrMsg <<endl;
 		cout << sqlite3_extended_errcode(db) << endl;
 		sqlite3_free(ErrMsg);
+	}
+
+	cout << "Souhaitez vous modifier un médecin ?" << endl;
+	cout << "1 - oui" << endl;
+	cout << "2 - non" << endl;
+	cin >> choix;
+
+	switch (choix)
+	{
+	case 1:
+		edition_medecin();
+		break;
+	case 2:
+		break;
 	}
 
 }
