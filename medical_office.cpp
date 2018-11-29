@@ -20,6 +20,10 @@ int main()
 	//INSTANCIATION DE LA BASE DE DONNEE
 	DataBase database;
 	database.set_database();
+	Patient temp_patient;
+	Medecin temp_medecin;
+	Prescription temp_prescription;
+
 	int reponse = -1;
 	string choix;
 	while (reponse != 0)
@@ -48,7 +52,6 @@ int main()
 		}
 		case 2 :
 		{
-			Patient temp_patient;
 			temp_patient.afficher_info_patient();
 			break;
 		}
@@ -62,13 +65,11 @@ int main()
 		}
 		case 4 :
 		{
-			Medecin temp_medecin;
 			temp_medecin.afficher_info_medecin();
 			break;
 		}
 		case 5 :
 		{
-			Prescription temp_prescription;
 			temp_prescription.remplir_pres();
 			temp_prescription.sauvegarder_pres();
 			cout << "Prescription crée" << endl;
@@ -76,26 +77,53 @@ int main()
 		}
 		case 6 :
 		{
-			Prescription temp_prescription;
-			temp_prescription.afficher_prescription(); //TODO : Pas encore fonctionnelle
-			cout << "Voulez vous éditez cette prescription ? Choix: Oui ou Non"  << endl;
-			cin >> choix;
-			if(choix == "Oui")
+			int inner_reponse;
+			cout << "Bienvenue dans le menu d'affichage des prescriptions. Tapez le numéro correspondant à l'action désirée : " << endl;
+			cout << "0 - Revenir au menu précédent" << endl;
+			cout << "1 - Afficher la dernière prescription" << endl;
+			cout << "2 - Afficher toutes les prescriptions" << endl;
+			cin >> inner_reponse;
+
+			switch (inner_reponse)
 			{
-				Prescription temp_prescription;
-				temp_prescription.edition_prescription();
+			case 0 :
+			{
+				cout << "Retour au menu principal" << endl;
+				break;
+			}
+			case 1 :
+			{
+				temp_prescription.afficher_prescription();
+				cout << "Voulez vous éditez cette prescription ? Choix: Oui ou Non"  << endl;
+				cin >> choix;
+				if(choix == "Oui")
+				{
+					temp_prescription.edition_prescription();
+				}
+				break;
+			}
+			case 2 :
+			{
+				temp_prescription.afficher_all_prescription();
+				cout << "Voulez vous éditez cette prescription ? Choix: Oui ou Non"  << endl;
+				cin >> choix;
+				if(choix == "Oui")
+				{
+					temp_prescription.edition_prescription();
+				}
+				break;
+			}
 			}
 			break;
 		}
 		case 7:
 		{
-			Prescription temp_prescription;
 			temp_prescription.edition_prescription();
 			break;
 		}
 		default: {break;}
-		}//END SWITCH
-	}
+	}//END SWITCH
+	}//END WHILE
 	if(reponse == 0)
 	{
 		cout << "A bientôt ! " <<endl;
