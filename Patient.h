@@ -37,7 +37,7 @@ private:
 		string tel;
 		string medecin;
 		string num_secu;
-		string grp_sanguin;
+		string grp_sang;
 		string adresse;
 	};
 
