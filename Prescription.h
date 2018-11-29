@@ -27,11 +27,13 @@ public:
 	void afficher_prescription();
 	void sauvegarder_pres();
 	void remplir_pres();
+	void edition_prescription();
 
 private:
 	//Attributs
 	struct data_pres
 	{
+		string ID;
 		string prescripteur;
 		string date_delivrance;
 		vector<vector<string>> liste_medic;

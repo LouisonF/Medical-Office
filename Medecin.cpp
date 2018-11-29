@@ -98,8 +98,3 @@ void Medecin::sauvegarder_medecin()
 }
 
 
-void Medecin::edition_prescription() //TODO l'edition de prescription doit-être faite au niveau de la classe Patient
-{
-
-}
-

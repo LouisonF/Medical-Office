@@ -22,7 +22,6 @@ public:
 	static int affichage_sql(void *p_data, int argc, char **argv, char **azColName);
 	void ajouter_medecin();
 	void sauvegarder_medecin();
-	void edition_prescription();
 	void afficher_info_medecin();
 
 private:

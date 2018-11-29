@@ -24,8 +24,8 @@ int Prescription::affichage_sql(void *p_data, int argc, char **argv, char **azCo
 	int i;
 	data_pres *data = (data_pres*)p_data;
 	for(i = 0; i<argc; i++) {
-		if (strcmp(azColName[i],"num_secu") == 0)
-			data->num_secu = argv[i];
+		if (strcmp(azColName[i],"ID") == 0)
+			data->ID = argv[i];
 		else if (strcmp(azColName[i],"nom") == 0)
 			data->nom = argv[i];
 		else if (strcmp(azColName[i],"prenom") == 0)
@@ -34,6 +34,9 @@ int Prescription::affichage_sql(void *p_data, int argc, char **argv, char **azCo
 			data->prescripteur = argv[i];
 		else if (strcmp(azColName[i],"date_delivrance") == 0)
 			data->date_delivrance = argv[i];
+		else if (strcmp(azColName[i],"num_secu") == 0)
+			data->num_secu = argv[i];
+
 	}
 	return 0;
 }
@@ -56,6 +59,7 @@ void Prescription::afficher_prescription()
 	/*TODO: Vérifier la taille de ce qui est sortit par la requete.
 	   	   	   Si >1, alors refaire la requete avec la date de naissance*/
 
+	cout << "ID : " << data.ID << endl;// TODO: L'ID renvoyé est vide
 	cout << "Nom du medecin : " << data.prescripteur << endl;
 	cout << "Date de délivrance de l'ordonnance : " << data.date_delivrance << endl;
 	cout << "Nom : " << data.nom<< endl;
@@ -70,7 +74,7 @@ void Prescription::sauvegarder_pres()
 	int rc;
 	int error;
 	string temp_medic;
-	string final_list = "";
+	string final_list;
 
 	/* Création de la requete SQL */
     for(auto i=0; i<data.liste_medic.size(); i++)
@@ -165,6 +169,103 @@ void Prescription::remplir_pres()
 		cin >> temp;
 		temp_vec.push_back(temp);
 		data.liste_medic.push_back(temp_vec);
+
+	}
+
+}
+
+void Prescription::edition_prescription()
+{
+	data_pres data;
+	int reponse;
+	/*Variables for the list_medic handling*/
+	int nbMed;
+	string temp;
+	string temp_medic;
+	string final_list;
+
+	cout << "Entrez l'ID de la prescription à mettre à jour, cf Affichage de la prescription : ";
+	cin >> data.ID;
+	cout << "Que voulez vous mettre à jour ? Tapez le numéro correspondant au champ : " << endl;
+	cout << "1 - Nom du médecin prescripteur" << endl;
+	cout << "2 - Date de délivrance" << endl;
+	cout << "3 - liste de médicaments" << endl;
+	cout << "4 - Nom du patient" << endl;
+	cout << "5 - Prénom du patient" << endl;
+	cout << "6 - Numéro de sécurité sociale" << endl;
+	cin >> reponse;
+
+	switch (reponse){
+	case 1 :
+		cout << "Entrez le nom du médecin prescripteur" << endl;
+		cin >> data.prescripteur;
+		update_db("PRESCRIPTION", "prescripteur", data.prescripteur, "ID", data.ID);
+		break;
+	case 2 :
+		cout << "Entrez la nouvelle date de délivrance" << endl;
+		cin >> data.date_delivrance;
+		update_db("PRESCRIPTION", "date_delivrance", data.date_delivrance, "ID", data.ID);
+		break;
+	case 3 :
+		cout << "Entrez la nouvelle liste de médicament" << endl;
+		cout << "Nombre de médicament(s) préscrit(s) : ";
+			cin >> nbMed;
+			cout << nbMed << endl;
+			for (int i = 0; i < nbMed; i++)
+			{
+				vector<string> temp_vec;
+				cout << "Nom du médicament n°" << i+1 << " : ";
+				cin >> temp;
+				temp_vec.push_back(temp);
+				cout << "Quantité : ";
+				cin >> temp;
+				temp_vec.push_back(temp);
+				cout << "Posologie : ";
+				cin >> temp;
+				temp_vec.push_back(temp);
+				data.liste_medic.push_back(temp_vec);
+
+			}
+		    for(auto i=0; i<data.liste_medic.size(); i++)
+		    {
+		    	vector<string> temp_list;
+		    	temp_list = data.liste_medic[i];
+		    	for(auto j=0; j<3; j++)
+		    	{
+		    		if(j >= 2)
+		    		{
+		    			temp_medic += temp_list.at(j);
+		    		}else
+		    		{
+		            	temp_medic += temp_list.at(j)+":";
+		    		}
+
+		    	}
+		    	if(i != data.liste_medic.size()-1)
+		    	{
+		    		temp_medic += ",";
+		    	}
+
+		    }
+		    final_list+= temp_medic;
+
+		update_db("PRESCRIPTION", "liste_medic", final_list, "ID", data.ID);
+		break;
+	case 4 :
+		cout << "Entrez le nom du patient svp" << endl;
+		cin >> data.nom;
+		update_db("PRESCRIPTION", "nom", data.nom, "ID", data.ID);
+		break;
+	case 5 :
+		cout << "Entrez le prénom du patient svp" << endl;
+		cin >> data.nom;
+		update_db("PRESCRIPTION", "prenom", data.prenom, "ID", data.ID);
+		break;
+	case 6 :
+		cout << "Entrez le numéro de sécurité sociale du patient svp" << endl;
+		cin >> data.num_secu;
+		update_db("PRESCRIPTION", "nom", data.num_secu, "ID", data.ID);
+		break;
 
 	}
 }

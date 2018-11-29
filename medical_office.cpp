@@ -20,7 +20,8 @@ int main()
 	//INSTANCIATION DE LA BASE DE DONNEE
 	DataBase database;
 	database.set_database();
-	int reponse;
+	int reponse = -1;
+	string choix;
 	while (reponse != 0)
 	{
 
@@ -31,7 +32,8 @@ int main()
 		cout << "3 - Ajouter un medecin" << endl;
 		cout << "4 - Afficher la fiche d'un medecin" << endl;
 		cout << "5 - Ajouter une prescription" << endl;
-		cout << "6 - Rechercher une prescription" << endl;
+		cout << "6 - Afficher une prescription" << endl;
+		cout << "7 - Modifier une prescription" << endl;
 		cin >> reponse;
 
 		switch (reponse)
@@ -76,6 +78,19 @@ int main()
 		{
 			Prescription temp_prescription;
 			temp_prescription.afficher_prescription(); //TODO : Pas encore fonctionnelle
+			cout << "Voulez vous éditez cette prescription ? Choix: Oui ou Non"  << endl;
+			cin >> choix;
+			if(choix == "Oui")
+			{
+				Prescription temp_prescription;
+				temp_prescription.edition_prescription();
+			}
+			break;
+		}
+		case 7:
+		{
+			Prescription temp_prescription;
+			temp_prescription.edition_prescription();
 			break;
 		}
 		default: {break;}
