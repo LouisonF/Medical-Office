@@ -102,6 +102,27 @@ void DataBase::set_database(){
 	} else {
 		cout << "Table created successfully" << endl;
 	}
+	sql = "CREATE TABLE if not exists RENDEZ_VOUS("  \
+				"ID 	INTEGER PRIMARY KEY  	AUTOINCREMENT," \
+				"nom_medecin       TEXT    	NOT NULL," \
+				"prenom_medecin    TEXT    	NOT NULL," \
+				"specialite        TEXT    	NOT NULL," \
+				"date			   TEXT    	NOT NULL," \
+				"nom_patient	   TEXT    	NOT NULL," \
+				"prenom_patient	   TEXT    	NOT NULL," \
+				"num_secu		   INTEGER  NOT NULL);";
+
+		/* Execute SQL statement */
+		rc = sqlite3_exec(db, sql, affichage_sql, 0, &ErrMsg);
+
+		if( rc != SQLITE_OK ){
+			cerr << "SQL error: " << ErrMsg << endl;
+			cout << sqlite3_extended_errcode(db) << endl;
+			sqlite3_free(ErrMsg);
+		} else {
+			cout << "Table created successfully" << endl;
+		}
+
 
 }
 
