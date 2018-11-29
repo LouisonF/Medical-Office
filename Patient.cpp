@@ -56,18 +56,39 @@ void Patient::afficher_info_patient()
 {
 	int rc;
 	char *ErrMsg;
-	//datas _data;
+	int reponse = 12;
+	string sql;
 
-	cout << "Entrez le nom du patient svp" << endl;
-	cin >> _data.nom;
+	cout << "Chercher patient par son nom tapez 1" << endl << "Chercher patient par son numéro de sécurité sociale tapez 2" << endl;
+	cin >> reponse;
 
-	cout << "Entrez le prénom du patient svp" << endl;
-	cin >> _data.prenom;
+	switch (reponse)
+	{
+	case 1:
+		cout << "Entrez le nom du patient svp" << endl;
+		cin >> _data.nom;
 
-	cout << "Entrez la date de naissance du patient svp" << endl;
-	cin >> _data.date_naissance;
+		cout << "Entrez le prénom du patient svp" << endl;
+		cin >> _data.prenom;
 
-	string sql = "SELECT * FROM PATIENT WHERE nom = '"+_data.nom+"' and prenom = '"+_data.prenom+"' and date_naissance = '"+_data.date_naissance+"'";
+		cout << "Entrez la date de naissance du patient svp" << endl;
+		cin >> _data.date_naissance;
+
+		cout << endl;
+
+		sql = "SELECT * FROM PATIENT WHERE nom = '"+_data.nom+"' and prenom = '"+_data.prenom+"' and date_naissance = '"+_data.date_naissance+"'";
+		break;
+	case 2:
+		cout << "Entrez le numéro de sécurité sociale du patient svp" << endl;
+		cin >> _data.num_secu;
+
+		cout << endl;
+
+		sql = "SELECT * FROM PATIENT WHERE num_secu = "+_data.num_secu;
+	}
+
+
+
 
 	/*Execute SQL statement*/
 	rc = sqlite3_exec(db, sql.c_str(), affichage_sql,&_data, &ErrMsg);
@@ -179,7 +200,6 @@ void Patient::sauvegarder_dossier()
 void Patient::remplir_patient()
 {
 
-
 	cout << "Entrez le nom du patient svp" << endl;
 	cin >> _data.nom;
 
@@ -202,7 +222,10 @@ void Patient::remplir_patient()
 	cin >> _data.grp_sang;
 
 	cout << "Entrez l'adresse du patient svp" << endl;
-	cin >> _data.adresse;
+	cin.ignore();
+	getline(cin,_data.adresse);
+
+	cout << endl;
 }
 
 void Patient::maj_patient(){
