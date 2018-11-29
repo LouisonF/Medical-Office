@@ -44,6 +44,8 @@ int Patient::affichage_sql(void *p_data, int argc, char **argv, char **azColName
 			data->adresse = argv[i];
 		else if (strcmp(azColName[i],"medecin") == 0)
 			data->medecin = argv[i];
+		else if (strcmp(azColName[i],"grp_sang") == 0)
+			data->grp_sang = argv[i];
 
 
 	}
@@ -55,7 +57,18 @@ void Patient::afficher_info_patient()
 	int rc;
 	char *ErrMsg;
 	//datas _data;
-	string sql = "SELECT * FROM PATIENT";
+
+	cout << "Entrez le nom du patient svp" << endl;
+	cin >> _data.nom;
+
+	cout << "Entrez le prénom du patient svp" << endl;
+	cin >> _data.prenom;
+
+	cout << "Entrez la date de naissance du patient svp" << endl;
+	cin >> _data.date_naissance;
+
+	string sql = "SELECT * FROM PATIENT WHERE nom = '"+_data.nom+"' and prenom = '"+_data.prenom+"' and date_naissance = '"+_data.date_naissance+"'";
+
 	/*Execute SQL statement*/
 	rc = sqlite3_exec(db, sql.c_str(), affichage_sql,&_data, &ErrMsg);
 
@@ -63,20 +76,24 @@ void Patient::afficher_info_patient()
 		cerr << "SQL error: " <<  ErrMsg <<endl;
 		cout << sqlite3_extended_errcode(db) << endl;
 		sqlite3_free(ErrMsg);
-	} else
+	} else if (_data.nom != "")
 	{
-		cout << "Here is the patient file" << endl;
+		cout << "Voici le dossier du patient " << _data.nom << endl;
+		cout << "Nom : " << _data.nom<< endl;
+		cout << "Prénom : " << _data.prenom<< endl;
+		cout << "Numéro de sécurité sociale : " << _data.num_secu<< endl;
+		cout << "Date de naissance : " << _data.date_naissance<< endl;
+		cout << "Groupe sanguin : " << _data.grp_sang << endl;
+		cout << "Numéro de téléphone : " << _data.tel<< endl;
+		cout << "Adresse : " << _data.adresse<< endl;
+		cout << "Médecin traitant : " << _data.medecin<< endl << endl;
+	} else{
+		cout << "Pase de dossier enregistré à ce jour" << endl << endl;
 	}
 	/*TODO: Vérifier la taille de ce qui est sortit par la requete.
 	   	   	   Si >1, alors refaire la requete avec la date de naissance*/
 
-	cout << "Nom : " << _data.nom<< endl;
-	cout << "Prénom : " << _data.prenom<< endl;
-	cout << "Numéro de sécurité sociale : " << _data.num_secu<< endl;
-	cout << "Date de naissance : " << _data.date_naissance<< endl;
-	cout << "Numéro de téléphone : " << _data.tel<< endl;
-	cout << "Adresse : " << _data.adresse<< endl;
-	cout << "Médecin traitant : " << _data.medecin<< endl;
+
 
 }
 
@@ -110,11 +127,8 @@ void Patient::sauvegarder_dossier()
 	//requete sql
 	/* Create SQL statement */
 
-	cout << _data.num_secu << endl;
-	cout << _data.adresse << endl;
-
-	string sql = "INSERT INTO PATIENT (num_secu,nom,prenom,date_naissance,tel,adresse,medecin) "  \
-			"VALUES ("+_data.num_secu+", '" +_data.nom+"', '"+_data.prenom+"', '"+_data.date_naissance+"', '"+_data.tel+"', '"+_data.adresse+"', '"+_data.medecin+"');";
+	string sql = "INSERT INTO PATIENT (num_secu,nom,prenom,date_naissance,tel,adresse,medecin,grp_sang) "  \
+			"VALUES ("+_data.num_secu+", '" +_data.nom+"', '"+_data.prenom+"', '"+_data.date_naissance+"', '"+_data.tel+"', '"+_data.adresse+"', '"+_data.medecin+"', '"+_data.grp_sang+"');";
 	/* Execution de la requete SQL*/
 
 	rc = sqlite3_exec(db, sql.c_str(), affichage_sql,&_data, &ErrMsg);
@@ -125,21 +139,21 @@ void Patient::sauvegarder_dossier()
 		sqlite3_free(ErrMsg);
 	} else
 	{
-		cout << "Patient file created successfully" << endl;
+		cout << "Patient créé" << endl;
 		error = 0;
 	}
 
-	/*while (error == 1555){
+	while (error == 1555){
 		cout << "Le numéro de sécurité social existe déjà." << endl;
-		cout << "Tapez 1 pour en rentrer un nouveau ou 2 pour modifier le dossier du patient correspondant" << endl;
+		cout << "Tapez 1 pour en rentrer un nouveau "<< endl <<"Tapez 2 pour modifier le dossier du patient correspondant" << endl;
 		cin >> reponse;
 		switch (reponse){
 		case 1:
 			cout << "Entrez un nouveau numéro de sécurité sociale svp";
 			cin >> _data.num_secu;
 
-			sql = "INSERT INTO PATIENT (num_secu,nom,prenom,date_naissance,tel,adresse,medecin) "  \
-					"VALUES ('"+_data.num_secu+"','" +_data.nom+"','"+_data.prenom+"','"+_data.date_naissance+"','"+_data.tel+"','"+_data.adresse+"','"+_data.medecin+"')";
+			sql = "INSERT INTO PATIENT (num_secu,nom,prenom,date_naissance,tel,adresse,medecin,grp_sang) "  \
+						"VALUES ("+_data.num_secu+", '" +_data.nom+"', '"+_data.prenom+"', '"+_data.date_naissance+"', '"+_data.tel+"', '"+_data.adresse+"', '"+_data.medecin+"', '"+_data.grp_sang+"');";
 
 			rc = sqlite3_exec(db, sql.c_str(), affichage_sql,0, &ErrMsg);
 
@@ -150,7 +164,7 @@ void Patient::sauvegarder_dossier()
 			} else
 			{
 				cout << "Patient file created successfully" << endl;
-				error = -1;
+				error = 0;
 			}
 			break;
 		case 2:
@@ -160,7 +174,7 @@ void Patient::sauvegarder_dossier()
 		}
 
 
-	}*/
+	}
 }
 void Patient::remplir_patient()
 {
@@ -185,13 +199,14 @@ void Patient::remplir_patient()
 	cin >> _data.num_secu;
 
 	cout << "Entrez le groupe sanguin du patient svp" << endl;
-	cin >> _data.grp_sanguin;
+	cin >> _data.grp_sang;
 
 	cout << "Entrez l'adresse du patient svp" << endl;
 	cin >> _data.adresse;
 }
 
 void Patient::maj_patient(){
+	string temp_num;
 	datas _data;
 	int reponse;
 	cout << "Que voulez vous mettre à jour ? Tapez le numéro correspondant au champ : " << endl;
@@ -207,44 +222,45 @@ void Patient::maj_patient(){
 
 	switch (reponse){
 	case 1 :
-		cout << "Entrez le nom du patient svp" << endl;
+		cout << "Entrez le nouveau nom du patient svp" << endl;
 		cin >> _data.nom;
 		update_db("PATIENT", "nom", _data.nom, "num_secu", _data.num_secu);
 		break;
 	case 2 :
-		cout << "Entrez le nom du patient svp" << endl;
-		cin >> _data.nom;
-		update_db("PATIENT", "nom", _data.nom, "num_secu", _data.num_secu);
+		cout << "Entrez le nouveau prénom du patient svp" << endl;
+		cin >> _data.prenom;
+		update_db("PATIENT", "prenom", _data.prenom, "num_secu", _data.num_secu);
 		break;
 	case 3 :
-		cout << "Entrez le nom du patient svp" << endl;
-		cin >> _data.nom;
-		update_db("PATIENT", "nom", _data.nom, "num_secu", _data.num_secu);
+		cout << "Entrez la nouvelle date de naissance du patient svp" << endl;
+		cin >> _data.date_naissance;
+		update_db("PATIENT", "date_naissance", _data.date_naissance, "num_secu", _data.num_secu);
 		break;
 	case 4 :
-		cout << "Entrez le nom du patient svp" << endl;
-		cin >> _data.nom;
-		update_db("PATIENT", "nom", _data.nom, "num_secu", _data.num_secu);
+		cout << "Entrez le nouveau numéro de téléphone du patient svp" << endl;
+		cin >> _data.tel;
+		update_db("PATIENT", "tel", _data.tel, "num_secu", _data.num_secu);
 		break;
 	case 5 :
-		cout << "Entrez le nom du patient svp" << endl;
-		cin >> _data.nom;
-		update_db("PATIENT", "nom", _data.nom, "num_secu", _data.num_secu);
+		cout << "Entrez le nom du nouveau médecin traitant du patient svp" << endl;
+		cin >> _data.medecin;
+		update_db("PATIENT", "medecin", _data.medecin, "num_secu", _data.num_secu);
 		break;
 	case 6 :
-		cout << "Entrez le nom du patient svp" << endl;
-		cin >> _data.nom;
-		update_db("PATIENT", "nom", _data.nom, "num_secu", _data.num_secu);
+		cout << "Entrez le nouveau numéro de sécurité sociale du patient svp" << endl;
+		temp_num = _data.num_secu;
+		cin >> _data.num_secu;
+		update_db("PATIENT", "num_secu", _data.num_secu, "num_secu", temp_num);
 		break;
 	case 7 :
-		cout << "Entrez le nom du patient svp" << endl;
-		cin >> _data.nom;
-		update_db("PATIENT", "nom", _data.nom, "num_secu", _data.num_secu);
+		cout << "Entrez le nouveau groupe sanguin du patient svp" << endl;
+		cin >> _data.grp_sang;
+		update_db("PATIENT", "grp_sang", _data.grp_sang, "num_secu", _data.num_secu);
 		break;
 	case 8 :
-		cout << "Entrez le nom du patient svp" << endl;
-		cin >> _data.nom;
-		update_db("PATIENT", "nom", _data.nom, "num_secu", _data.num_secu);
+		cout << "Entrez la nouvelle adresse du patient svp" << endl;
+		cin >> _data.adresse;
+		update_db("PATIENT", "adresse", _data.adresse, "num_secu", _data.num_secu);
 		break;
 	}
 }

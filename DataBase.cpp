@@ -49,6 +49,7 @@ void DataBase::set_database(){
 			"num_secu INTEGER PRIMARY KEY  	NOT NULL," \
 			"nom           		TEXT    	NOT NULL," \
 			"prenom           	TEXT    	NOT NULL," \
+			"grp_sang        	TEXT		NOT NULL," \
 			"date_naissance   	TEXT 		NOT NULL," \
 			"tel        		TEXT," \
 			"adresse        	TEXT," \
@@ -109,14 +110,14 @@ void DataBase::insert_test_values(){
 	char *ErrMsg;
 	int rc;
 	// Insertion de valeurs pour tester le programme
-	sql = "INSERT INTO PATIENT (num_secu,nom,prenom,date_naissance,tel,adresse,medecin) "  \
-			"VALUES (78965, 'COURTIN', 'François', '19/02/1996', '0612121212', '3 rue Pierre Martin', 'COURTIN' ); " \
+	sql = "INSERT INTO PATIENT (num_secu,nom,prenom,date_naissance,tel,adresse,medecin,grp_sang) "  \
+			"VALUES (78965, 'COURTIN', 'François', '19/02/1996', '0612121212', '3 rue Pierre Martin', 'COURTIN', 'A+' ); " \
 			"INSERT INTO MEDECIN (ID,nom,prenom,specialite) "  \
 			"VALUES (45, 'COURTIN', 'Olivier', 'Anesthésiste'); "     \
 			"INSERT INTO PRESCRIPTION (ID,prescripteur,date_delivrance,liste_medic,nom,prenom,num_secu,date_naissance)" \
 			"VALUES (466, 'COURTIN', '12/12/2012', 'Paracétamol:1 boîte:3/jour;Ibuprophène:1 boîte:3/jour;', 'COURTIN', 'François', '65465454', '19/02/1996' );" \
-			"INSERT INTO PATIENT (num_secu,nom,prenom,date_naissance,tel,adresse,medecin) "  \
-			"VALUES (123564, 'FRESNAIS', 'Louison', '01/06/1996', '0613131313', '2 rue Félix Martin', 'CLAYSSEN' ); " \
+			"INSERT INTO PATIENT (num_secu,nom,prenom,date_naissance,tel,adresse,medecin, grp_sang) "  \
+			"VALUES (123564, 'FRESNAIS', 'Louison', '01/06/1996', '0613131313', '2 rue Félix Martin', 'CLAYSSEN', 'A+' ); " \
 			"INSERT INTO MEDECIN (ID,nom,prenom,specialite) "  \
 			"VALUES (78, 'CLAYSSEN', 'Quentin', 'Généraliste'); "     \
 			"INSERT INTO PRESCRIPTION (ID,prescripteur,date_delivrance,liste_medic,nom,prenom,num_secu,date_naissance)" \
