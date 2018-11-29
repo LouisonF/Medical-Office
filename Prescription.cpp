@@ -69,6 +69,7 @@ void Prescription::afficher_prescription()
 {
 	int rc;
 	char *ErrMsg;
+	string choix;
 	string num_secu;
 	string ID;
 	string temp_medic;
@@ -81,6 +82,11 @@ void Prescription::afficher_prescription()
 	string sql = "SELECT * FROM PRESCRIPTION WHERE num_secu = "+num_secu+";";
 	/*Execute SQL statement*/
 	rc = sqlite3_exec(db, sql.c_str(), affichage_sql,&data, &ErrMsg);
+
+	if (num_secu != data.num_secu){
+		cout << "Ce patient n'a pas de prescription" << endl;
+		return;
+	}
 
 	if( rc != SQLITE_OK ){
 		cerr << "SQL error: " <<  ErrMsg <<endl;
@@ -123,11 +129,19 @@ void Prescription::afficher_prescription()
 	cout << "Prénom : " << data.prenom<< endl;
 	cout << "Numéro de sécurité sociale : " << data.num_secu << endl;
 
+	cout << "Voulez vous éditer cette prescription ? Choix: Oui ou Non"  << endl;
+	cin >> choix;
+	if(choix == "Oui")
+	{
+		edition_prescription();
+	}
+
 }
 void Prescription::afficher_all_prescription()
 {
 	int rc;
 	char *ErrMsg;
+	string choix;
 	string num_secu;
 	string ID;
 	while(num_secu == "")
@@ -138,6 +152,10 @@ void Prescription::afficher_all_prescription()
 	string sql = "SELECT * FROM PRESCRIPTION WHERE num_secu = "+num_secu+";";
 	/*Execute SQL statement*/
 	rc = sqlite3_exec(db, sql.c_str(), affichage_all_sql,0, &ErrMsg);
+	if (num_secu != data.num_secu){
+		cout << "Ce patient n'a pas de prescription" << endl;
+		return;
+	}
 
 	if( rc != SQLITE_OK )
 	{
@@ -145,8 +163,12 @@ void Prescription::afficher_all_prescription()
 		cout << sqlite3_extended_errcode(db) << endl;
 		sqlite3_free(ErrMsg);
 	}
-	/*TODO: Vérifier la taille de ce qui est sortit par la requete.
-	   	   	   Si >1, alors refaire la requete avec la date de naissance*/
+	cout << "Voulez vous éditer cette prescription ? Choix: Oui ou Non"  << endl;
+	cin >> choix;
+	if(choix == "Oui")
+	{
+		edition_prescription();
+	}
 
 }
 void Prescription::sauvegarder_pres()
@@ -304,6 +326,7 @@ void Prescription::edition_prescription()
 				cout << "Posologie : ";
 				cin >> temp;
 				temp_vec.push_back(temp);
+				data.liste_medic.clear();
 				data.liste_medic.push_back(temp_vec);
 
 			}

@@ -88,19 +88,32 @@ int main()
 		{
 			temp_medecin.ajouter_medecin();
 			temp_medecin.sauvegarder_medecin();
-			cout << "Medecin créé" << endl;
 			break;
 		}
 		case 5 :
 		{
-			temp_medecin.afficher_info_medecin();
+			int reponse_info_medecin;
+			cout << "1 - Chercher medecin par son nom" << endl;
+			cout << "2 - Afficher tous les patients" << endl;
+			cout << "0 - Retour au menu" << endl;
+			cin >> reponse_info_medecin;
+			switch(reponse_info_medecin)
+			{
+			case 0:
+				break;
+			case 1:
+				temp_medecin.afficher_info_medecin();
+				break;
+			case 2:
+				temp_medecin.afficher_info_all_medecin();
+				break;
+			}
 			break;
 		}
 		case 6 :
 		{
 			temp_prescription.remplir_pres();
 			temp_prescription.sauvegarder_pres();
-			cout << "Prescription crée" << endl;
 			break;
 		}
 		case 7 :
@@ -122,23 +135,11 @@ int main()
 			case 1 :
 			{
 				temp_prescription.afficher_prescription();
-				cout << "Voulez vous éditez cette prescription ? Choix: Oui ou Non"  << endl;
-				cin >> choix;
-				if(choix == "Oui")
-				{
-					temp_prescription.edition_prescription();
-				}
 				break;
 			}
 			case 2 :
 			{
 				temp_prescription.afficher_all_prescription();
-				cout << "Voulez vous éditez cette prescription ? Choix: Oui ou Non"  << endl;
-				cin >> choix;
-				if(choix == "Oui")
-				{
-					temp_prescription.edition_prescription();
-				}
 				break;
 			}
 			}
