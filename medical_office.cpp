@@ -7,6 +7,7 @@
 #include<iostream>
 #include<string>
 #include<vector>
+#include<algorithm>
 #include"Patient.h"
 #include"Prescription.h"
 #include "DataBase.h"
@@ -33,49 +34,76 @@ int main()
 		cout << "0 - Sortir de l'application" << endl;
 		cout << "1 - Ajouter un patient" << endl;
 		cout << "2 - Afficher le dossier d'un patient" << endl;
-		cout << "3 - Ajouter un medecin" << endl;
-		cout << "4 - Afficher la fiche d'un medecin" << endl;
-		cout << "5 - Ajouter une prescription" << endl;
-		cout << "6 - Afficher une prescription" << endl;
-		cout << "7 - Modifier une prescription" << endl;
-		cin >> reponse;
+		cout << "3 - Modifier le dossier d'un patient" << endl;
+		cout << "4 - Ajouter un medecin" << endl;
+		cout << "5 - Afficher la fiche d'un medecin" << endl;
+		cout << "6 - Ajouter une prescription" << endl;
+		cout << "7 - Afficher une prescription" << endl;
+		cout << "8 - Modifier une prescription" << endl;
+		while(!(cin >> reponse)){
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cout << "Entre un numéro valide svp"<<endl;
+		}
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
 		switch (reponse)
 		{
 		case 1 :
 		{
-			Patient temp_patient;
 			temp_patient.remplir_patient();
 			temp_patient.sauvegarder_dossier();
-			cout << "Patient créé" << endl;
 			break;
 		}
 		case 2 :
 		{
-			temp_patient.afficher_info_patient();
+			int reponse_info_patient;
+			cout << "1 - Chercher patient par son nom" << endl;
+			cout << "2 - Chercher patient par son numéro de sécurité sociale" << endl;
+			cout << "3 - Afficher tous les patients" << endl;
+			cout << "0 - Retour au menu" << endl;
+			cin >> reponse_info_patient;
+			switch(reponse_info_patient)
+			{
+			case 0:
+				break;
+			case 1:
+				temp_patient.afficher_info_patient(1);
+				break;
+			case 2:
+				temp_patient.afficher_info_patient(2);
+				break;
+			case 3:
+				temp_patient.afficher_info_patient(3);
+				break;
+			}
 			break;
 		}
 		case 3 :
 		{
-			Medecin temp_medecin;
+			temp_patient.maj_patient(true);
+			break;
+		}
+		case 4 :
+		{
 			temp_medecin.ajouter_medecin();
 			temp_medecin.sauvegarder_medecin();
 			cout << "Medecin créé" << endl;
 			break;
 		}
-		case 4 :
+		case 5 :
 		{
 			temp_medecin.afficher_info_medecin();
 			break;
 		}
-		case 5 :
+		case 6 :
 		{
 			temp_prescription.remplir_pres();
 			temp_prescription.sauvegarder_pres();
 			cout << "Prescription crée" << endl;
 			break;
 		}
-		case 6 :
+		case 7 :
 		{
 			int inner_reponse;
 			cout << "Bienvenue dans le menu d'affichage des prescriptions. Tapez le numéro correspondant à l'action désirée : " << endl;
@@ -116,20 +144,22 @@ int main()
 			}
 			break;
 		}
-		case 7:
+		case 8:
 		{
 			temp_prescription.edition_prescription();
 			break;
 		}
-		default: {break;}
-	}//END SWITCH
+		default: {
+			break;
+		}
+		}//END SWITCH
 	}//END WHILE
 	if(reponse == 0)
 	{
 		cout << "A bientôt ! " <<endl;
 	}
 
-return 1;
+	return 1;
 
 }
 
