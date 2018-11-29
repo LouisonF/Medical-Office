@@ -12,6 +12,7 @@
 #include"Prescription.h"
 #include "DataBase.h"
 #include "Medecin.h"
+#include "Rendezvous.h"
 
 using namespace std;
 
@@ -24,6 +25,7 @@ int main()
 	Patient temp_patient;
 	Medecin temp_medecin;
 	Prescription temp_prescription;
+	Rendez_vous temp_rdv;
 
 	int reponse = -1;
 	string choix;
@@ -31,15 +33,16 @@ int main()
 	{
 
 		cout << "Que voulez vous faire ? Tapez le numéro correspondant : " << endl;
-		cout << "0 - Sortir de l'application" << endl;
 		cout << "1 - Ajouter un patient" << endl;
 		cout << "2 - Afficher le dossier d'un patient" << endl;
-		cout << "3 - Modifier le dossier d'un patient" << endl;
+		cout << "3 - Effectuer des modifications" << endl;
 		cout << "4 - Ajouter un medecin" << endl;
 		cout << "5 - Afficher la fiche d'un medecin" << endl;
 		cout << "6 - Ajouter une prescription" << endl;
 		cout << "7 - Afficher une prescription" << endl;
-		cout << "8 - Modifier une prescription" << endl;
+		cout << "8 - Ajouter un rendez-vous" << endl;
+		cout << "9 - Afficher un rendez-vous" << endl;
+		cout << "0 - Sortir de l'application" << endl;
 		while(!(cin >> reponse)){
 			cin.clear();
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -81,8 +84,32 @@ int main()
 		}
 		case 3 :
 		{
-			temp_patient.maj_patient(true);
+			int reponse_info_modif;
+			cout << "1 - Modifier un patient" << endl;
+			cout << "2 - Modifier un medecin" << endl;
+			cout << "3 - Modifier une prescription" << endl;
+			cout << "4 - Modifier un rendez-vous" << endl;
+			cout << "0 - Retour au menu" << endl;
+			cin >> reponse_info_modif;
+			switch(reponse_info_modif)
+			{
+			case 0:
+				break;
+			case 1:
+				temp_patient.maj_patient(true);
+				break;
+			case 2:
+				temp_medecin.edition_medecin();
+				break;
+			case 3:
+				temp_prescription.edition_prescription();
+				break;
+			case 4:
+				temp_rdv.edition_rendez_vous();
+				break;
+			}
 			break;
+
 		}
 		case 4 :
 		{
@@ -94,7 +121,7 @@ int main()
 		{
 			int reponse_info_medecin;
 			cout << "1 - Chercher medecin par son nom" << endl;
-			cout << "2 - Afficher tous les patients" << endl;
+			cout << "2 - Afficher tous les medecins" << endl;
 			cout << "0 - Retour au menu" << endl;
 			cin >> reponse_info_medecin;
 			switch(reponse_info_medecin)
@@ -147,9 +174,16 @@ int main()
 		}
 		case 8:
 		{
-			temp_prescription.edition_prescription();
+			temp_rdv.ajouter_rdv();
+			temp_rdv.creer_rendez_vous();
 			break;
 		}
+		case 9:
+		{
+			temp_rdv.afficher_rendez_vous();
+			break;
+		}
+
 		default: {
 			break;
 		}
