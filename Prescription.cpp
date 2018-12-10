@@ -44,8 +44,9 @@ int Prescription::affichage_sql(void *p_data, int argc, char **argv, char **azCo
 }
 int Prescription::affichage_all_sql(void *p_data, int argc, char **argv, char **azColName)
 {
-	int i;
 
+	int i;
+	data_pres *data = (data_pres*)p_data;
 	for(i = 0; i<argc; i++) {
 		if (strcmp(azColName[i],"ID") == 0)
 			cout << "ID : " << argv[i] <<endl;
@@ -57,8 +58,10 @@ int Prescription::affichage_all_sql(void *p_data, int argc, char **argv, char **
 			cout << "Nom du prescripteur : " << argv[i] <<endl;
 		else if (strcmp(azColName[i],"date_delivrance") == 0)
 			cout << "Date de délivrance : " << argv[i] <<endl;
-		else if (strcmp(azColName[i],"num_secu") == 0)
+		else if (strcmp(azColName[i],"num_secu") == 0){
 			cout << "Numéro de sécurité sociale : " << argv[i] <<endl;
+			data->num_secu = argv[i];
+		}
 		else if (strcmp(azColName[i],"liste_medic") == 0)
 			cout << "Liste de médicaments: " << argv[i] <<endl;
 
@@ -102,29 +105,29 @@ void Prescription::afficher_prescription()
 	cout << "ID : " << data.ID << endl;// TODO: L'ID renvoyé est vide
 	cout << "Nom du medecin : " << data.prescripteur << endl;
 	cout << "Date de délivrance de l'ordonnance : " << data.date_delivrance << endl;
-    for(auto i=0; i<data.liste_medic.size(); i++)
-    {
-    	vector<string> temp_list;
-    	temp_list = data.liste_medic[i];
-    	for(auto j=0; j<3; j++)
-    	{
-    		if(j >= 2)
-    		{
-    			temp_medic += temp_list.at(j);
-    		}else
-    		{
-            	temp_medic += temp_list.at(j)+":";
-    		}
+	for(auto i=0; i<data.liste_medic.size(); i++)
+	{
+		vector<string> temp_list;
+		temp_list = data.liste_medic[i];
+		for(auto j=0; j<3; j++)
+		{
+			if(j >= 2)
+			{
+				temp_medic += temp_list.at(j);
+			}else
+			{
+				temp_medic += temp_list.at(j)+":";
+			}
 
-    	}
-    	if(i != data.liste_medic.size()-1)
-    	{
-    		temp_medic += ",";
-    	}
+		}
+		if(i != data.liste_medic.size()-1)
+		{
+			temp_medic += ",";
+		}
 
-    }
-    final_list+= temp_medic;
-    cout << "Liste des médicaments " << final_list <<endl;
+	}
+	final_list+= temp_medic;
+	cout << "Liste des médicaments " << final_list <<endl;
 	cout << "Nom : " << data.nom<< endl;
 	cout << "Prénom : " << data.prenom<< endl;
 	cout << "Numéro de sécurité sociale : " << data.num_secu << endl;
@@ -133,7 +136,7 @@ void Prescription::afficher_prescription()
 	cin >> choix;
 	if(choix == "Oui")
 	{
-		edition_prescription();
+		edition_prescription(true);
 	}
 
 }
@@ -144,6 +147,7 @@ void Prescription::afficher_all_prescription()
 	string choix;
 	string num_secu;
 	string ID;
+
 	while(num_secu == "")
 	{
 		cout << "Entrez le numéro de sécurité sociale du patient svp" << endl;
@@ -151,7 +155,8 @@ void Prescription::afficher_all_prescription()
 	}
 	string sql = "SELECT * FROM PRESCRIPTION WHERE num_secu = "+num_secu+";";
 	/*Execute SQL statement*/
-	rc = sqlite3_exec(db, sql.c_str(), affichage_all_sql,0, &ErrMsg);
+	rc = sqlite3_exec(db, sql.c_str(), affichage_all_sql,&data, &ErrMsg);
+
 	if (num_secu != data.num_secu){
 		cout << "Ce patient n'a pas de prescription" << endl;
 		return;
@@ -163,12 +168,15 @@ void Prescription::afficher_all_prescription()
 		cout << sqlite3_extended_errcode(db) << endl;
 		sqlite3_free(ErrMsg);
 	}
-	cout << "Voulez vous éditer cette prescription ? Choix: Oui ou Non"  << endl;
+
+	cout << "Voulez vous éditer une prescription ? Choix: Oui ou Non"  << endl;
 	cin >> choix;
 	if(choix == "Oui")
 	{
-		edition_prescription();
+		edition_prescription(false);
 	}
+
+
 
 }
 void Prescription::sauvegarder_pres()
@@ -181,33 +189,33 @@ void Prescription::sauvegarder_pres()
 	string final_list;
 
 	/* Création de la requete SQL */
-    for(auto i=0; i<data.liste_medic.size(); i++)
-    {
-    	vector<string> temp_list;
-    	temp_list = data.liste_medic[i];
-    	for(auto j=0; j<3; j++)
-    	{
-    		if(j >= 2)
-    		{
-    			temp_medic += temp_list.at(j);
-    		}else
-    		{
-            	temp_medic += temp_list.at(j)+":";
-    		}
+	for(auto i=0; i<data.liste_medic.size(); i++)
+	{
+		vector<string> temp_list;
+		temp_list = data.liste_medic[i];
+		for(auto j=0; j<3; j++)
+		{
+			if(j >= 2)
+			{
+				temp_medic += temp_list.at(j);
+			}else
+			{
+				temp_medic += temp_list.at(j)+":";
+			}
 
-    	}
-    	if(i != data.liste_medic.size()-1)
-    	{
-    		temp_medic += ",";
-    	}
+		}
+		if(i != data.liste_medic.size()-1)
+		{
+			temp_medic += ",";
+		}
 
-    }
-    final_list+= temp_medic;
+	}
+	final_list+= temp_medic;
 
-    cout << final_list << endl;
+	cout << final_list << endl;
 
-    string sql = "INSERT INTO PRESCRIPTION (prescripteur,date_delivrance,liste_medic,nom,prenom,num_secu) "  \
-				"VALUES ('"+data.prescripteur+"','" +data.date_delivrance+"','" +final_list+"','"+data.nom+"','"+data.prenom+"',"+data.num_secu+");";
+	string sql = "INSERT INTO PRESCRIPTION (prescripteur,date_delivrance,liste_medic,nom,prenom,num_secu) "  \
+			"VALUES ('"+data.prescripteur+"','" +data.date_delivrance+"','" +final_list+"','"+data.nom+"','"+data.prenom+"',"+data.num_secu+");";
 	/* Execution de la requete SQL*/
 
 	rc = sqlite3_exec(db, sql.c_str(), affichage_sql,0, &ErrMsg);
@@ -225,8 +233,8 @@ void Prescription::sauvegarder_pres()
 		cout << "Le numéro de sécurité social existe déjà, veuillez en rentrer un nouveau svp" << endl;
 		cin >> data.num_secu;
 
-		 sql = "INSERT INTO PRESCRIPTION (prescripteur,date_delivrance,liste_medic,nom,prenom,num_secu) "  \
-					"VALUES ('"+data.prescripteur+"','" +data.date_delivrance+"','" +final_list+"','"+data.nom+"','"+data.prenom+"',"+data.num_secu+");";
+		sql = "INSERT INTO PRESCRIPTION (prescripteur,date_delivrance,liste_medic,nom,prenom,num_secu) "  \
+				"VALUES ('"+data.prescripteur+"','" +data.date_delivrance+"','" +final_list+"','"+data.nom+"','"+data.prenom+"',"+data.num_secu+");";
 
 		rc = sqlite3_exec(db, sql.c_str(), affichage_sql,0, &ErrMsg);
 
@@ -278,7 +286,7 @@ void Prescription::remplir_pres()
 
 }
 
-void Prescription::edition_prescription()
+void Prescription::edition_prescription(bool know)
 {
 	int reponse;
 	/*Variables for the list_medic handling*/
@@ -287,8 +295,10 @@ void Prescription::edition_prescription()
 	string temp_medic;
 	string final_list;
 
-	cout << "Entrez l'ID de la prescription à mettre à jour, cf Affichage de la prescription : ";
-	cin >> data.ID;
+	if (!know){
+		cout << "Entrez l'ID de la prescription à mettre à jour, cf Affichage de la prescription : ";
+		cin >> data.ID;
+	}
 	cout << "Que voulez vous mettre à jour ? Tapez le numéro correspondant au champ : " << endl;
 	cout << "1 - Nom du médecin prescripteur" << endl;
 	cout << "2 - Date de délivrance" << endl;
@@ -296,6 +306,7 @@ void Prescription::edition_prescription()
 	cout << "4 - Nom du patient" << endl;
 	cout << "5 - Prénom du patient" << endl;
 	cout << "6 - Numéro de sécurité sociale" << endl;
+	cout << "0 - Retour au menu" << endl;
 	cin >> reponse;
 
 	switch (reponse){
@@ -312,46 +323,46 @@ void Prescription::edition_prescription()
 	case 3 :
 		cout << "Entrez la nouvelle liste de médicament" << endl;
 		cout << "Nombre de médicament(s) préscrit(s) : ";
-			cin >> nbMed;
-			cout << nbMed << endl;
-			for (int i = 0; i < nbMed; i++)
+		cin >> nbMed;
+		cout << nbMed << endl;
+		for (int i = 0; i < nbMed; i++)
+		{
+			vector<string> temp_vec;
+			cout << "Nom du médicament n°" << i+1 << " : ";
+			cin >> temp;
+			temp_vec.push_back(temp);
+			cout << "Quantité : ";
+			cin >> temp;
+			temp_vec.push_back(temp);
+			cout << "Posologie : ";
+			cin >> temp;
+			temp_vec.push_back(temp);
+			data.liste_medic.clear();
+			data.liste_medic.push_back(temp_vec);
+
+		}
+		for(auto i=0; i<data.liste_medic.size(); i++)
+		{
+			vector<string> temp_list;
+			temp_list = data.liste_medic[i];
+			for(auto j=0; j<3; j++)
 			{
-				vector<string> temp_vec;
-				cout << "Nom du médicament n°" << i+1 << " : ";
-				cin >> temp;
-				temp_vec.push_back(temp);
-				cout << "Quantité : ";
-				cin >> temp;
-				temp_vec.push_back(temp);
-				cout << "Posologie : ";
-				cin >> temp;
-				temp_vec.push_back(temp);
-				data.liste_medic.clear();
-				data.liste_medic.push_back(temp_vec);
+				if(j >= 2)
+				{
+					temp_medic += temp_list.at(j);
+				}else
+				{
+					temp_medic += temp_list.at(j)+":";
+				}
 
 			}
-		    for(auto i=0; i<data.liste_medic.size(); i++)
-		    {
-		    	vector<string> temp_list;
-		    	temp_list = data.liste_medic[i];
-		    	for(auto j=0; j<3; j++)
-		    	{
-		    		if(j >= 2)
-		    		{
-		    			temp_medic += temp_list.at(j);
-		    		}else
-		    		{
-		            	temp_medic += temp_list.at(j)+":";
-		    		}
+			if(i != data.liste_medic.size()-1)
+			{
+				temp_medic += ",";
+			}
 
-		    	}
-		    	if(i != data.liste_medic.size()-1)
-		    	{
-		    		temp_medic += ",";
-		    	}
-
-		    }
-		    final_list+= temp_medic;
+		}
+		final_list+= temp_medic;
 
 		update_db("PRESCRIPTION", "liste_medic", final_list, "ID", data.ID);
 		break;
@@ -374,4 +385,4 @@ void Prescription::edition_prescription()
 	}
 }
 
- /* namespace std */
+/* namespace std */

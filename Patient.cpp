@@ -162,7 +162,7 @@ void Patient::afficher_info_patient(int reponse)
 			break;
 		}
 	} else {
-		cout << "Tous les dossiers ont été affichés." << endl;
+		cout << "Tous les dossiers ont été affichés." << endl << endl;
 	}
 }
 

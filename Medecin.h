@@ -25,7 +25,7 @@ public:
 	void sauvegarder_medecin();
 	void afficher_info_medecin();
 	void afficher_info_all_medecin();
-	void edition_medecin();
+	void edition_medecin(bool);
 
 private:
 	struct data_med

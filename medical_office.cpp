@@ -22,6 +22,7 @@ int main()
 	//INSTANCIATION DE LA BASE DE DONNEE
 	DataBase database;
 	database.set_database();
+	//database.insert_test_values(); //A ne lancer que si la DB est vide
 	Patient temp_patient;
 	Medecin temp_medecin;
 	Prescription temp_prescription;
@@ -99,10 +100,10 @@ int main()
 				temp_patient.maj_patient(true);
 				break;
 			case 2:
-				temp_medecin.edition_medecin();
+				temp_medecin.edition_medecin(false);
 				break;
 			case 3:
-				temp_prescription.edition_prescription();
+				temp_prescription.edition_prescription(false);
 				break;
 			case 4:
 				temp_rdv.edition_rendez_vous();
@@ -147,9 +148,9 @@ int main()
 		{
 			int inner_reponse;
 			cout << "Bienvenue dans le menu d'affichage des prescriptions. Tapez le numéro correspondant à l'action désirée : " << endl;
+			cout << "1 - Afficher la dernière prescription d'un patient" << endl;
+			cout << "2 - Afficher toutes les prescriptions d'un patient" << endl;
 			cout << "0 - Revenir au menu précédent" << endl;
-			cout << "1 - Afficher la dernière prescription" << endl;
-			cout << "2 - Afficher toutes les prescriptions" << endl;
 			cin >> inner_reponse;
 
 			switch (inner_reponse)

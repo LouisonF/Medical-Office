@@ -29,7 +29,7 @@ public:
 	void afficher_all_prescription();
 	void sauvegarder_pres();
 	void remplir_pres();
-	void edition_prescription();
+	void edition_prescription(bool);
 
 private:
 	//Attributs

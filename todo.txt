@@ -1,0 +1,15 @@
+Armoniser les affichages (reponses oui non ou numéros, etc)
+Armoniser les noms de variables entre les classes (prendre modèle sur une qu'a fait Louison ex : medecin)
+
+Ajouter des structures de contrôl (format de la date, longueur du numéro de téléphone, heure de RDV)
+
+Vérifier et faire des liens entre les classes lors des créations ou maj des informations :
+		- Ajout ou maj d'un patient vérifier si le médecin rentré existe dans la DB.
+		- Entré d'un num de sécu pour RDV ou prescription : vérifier si le num sécu existe dans la table patient.
+		- Vérifier si le num sécu le nom et le prénom d'un patient correspondent en cas de RDV ou de prescription
+		- En cas de RDV vérifier la date et l'heure ne sont pas déjà prises pour le médecin et le patient.
+		- ...
+
+Bonus :
+Lors de la consultation d'un médecin ou d'un patient, proposer d'accèder à ses RDV ou ses préscriptions.
+Lors de la consultation d'une prescription proposer d'accèder à la fiche médecin ou patient. Idem pour un RDV

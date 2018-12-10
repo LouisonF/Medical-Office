@@ -108,7 +108,7 @@ void Medecin::afficher_info_medecin()
 	switch (choix)
 	{
 	case 1:
-		edition_medecin();
+		edition_medecin(true);
 		break;
 	case 2:
 		break;
@@ -140,7 +140,7 @@ void Medecin::afficher_info_all_medecin()
 	switch (choix)
 	{
 	case 1:
-		edition_medecin();
+		edition_medecin(false);
 		break;
 	case 2:
 		break;
@@ -168,16 +168,20 @@ void Medecin::sauvegarder_medecin()
 
 }
 
-void Medecin::edition_medecin()
+void Medecin::edition_medecin(bool know)
 {
 	int reponse;
 
-	cout << "Entrez l'ID du médecin à mettre à jour, cf Affichage de la fiche medecin : ";
-	cin >> data.ID;
+	if (!know){
+		cout << "Entrez l'ID du médecin à mettre à jour, cf Affichage de la fiche medecin : ";
+		cin >> data.ID;
+	}
+
 	cout << "Que voulez vous mettre à jour ? Tapez le numéro correspondant au champ : " << endl;
 	cout << "1 - Nom du médecin " << endl;
 	cout << "2 - Prénom du médecin" << endl;
 	cout << "3 - Spécialitée" << endl;
+	cout << "0 - Retour au menu" << endl;
 	cin >> reponse;
 
 	switch (reponse)

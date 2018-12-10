@@ -29,6 +29,7 @@ private:
 		string prenom_medecin;
 		string specialite;
 		string date;
+		string heure;
 		string nom_patient;
 		string prenom_patient;
 		string num_secu;

@@ -21,7 +21,7 @@ Rendez_vous::~Rendez_vous()
 int Rendez_vous::affichage_all_sql(void *p_data, int argc, char **argv, char **azColName)
 {
 	int i;
-
+	data_rdv *data = (data_rdv*)p_data;
 	for(i = 0; i<argc; i++)
 	{
 		if (strcmp(azColName[i],"nom_medecin") == 0)
@@ -32,12 +32,16 @@ int Rendez_vous::affichage_all_sql(void *p_data, int argc, char **argv, char **a
 			cout << "Spécialité : " << argv[i] <<endl;
 		else if (strcmp(azColName[i],"date") == 0)
 			cout << "Date du rendez-vous : " << argv[i] <<endl;
+		else if (strcmp(azColName[i],"heure") == 0)
+			cout << "Heure du rendez-vous : " << argv[i] <<endl;
 		else if (strcmp(azColName[i],"nom_patient") == 0)
 			cout << "Nom du patient : " << argv[i] <<endl;
 		else if (strcmp(azColName[i],"prenom_patient") == 0)
 			cout << "Prénom patient : " << argv[i] <<endl;
-		else if (strcmp(azColName[i],"num_secu") == 0)
+		else if (strcmp(azColName[i],"num_secu") == 0){
 			cout << "Numéro de sécurité sociale du patient : " << argv[i] <<endl;
+			data->num_secu = argv[i];
+		}
 	}
 	return 0;
 }
@@ -48,10 +52,10 @@ void Rendez_vous::afficher_rendez_vous()
 	int rc;
 	char *ErrMsg;
 
-	string personne;
+	int personne;
 	string choix;
 	string date = "aucune";
-	cout << "Pour quelle personne voulez vous afficher les rendez-vous(medecin/patient)?" <<endl;
+	cout << "Pour quelle personne voulez vous afficher les rendez-vous?" <<endl << "1 - Medecin" << endl << "2 - Patient"<<endl;
 	cin >> personne;
 	cout << "Désirez vous affichez les rendez-vous à une date particulière (Oui/Non)?" <<endl;
 	cin >> choix;
@@ -61,7 +65,7 @@ void Rendez_vous::afficher_rendez_vous()
 		cin >> date;
 	}
 
-	if(personne == "medecin" )
+	if(personne == 1 )
 	{
 		string nom_medecin;
 		string prenom_medecin;
@@ -74,7 +78,7 @@ void Rendez_vous::afficher_rendez_vous()
 		{
 			string sql = "SELECT * FROM RENDEZ_VOUS WHERE nom_medecin = '"+nom_medecin+"' AND prenom_medecin='"+prenom_medecin+"';";
 			/*Execute SQL statement*/
-			rc = sqlite3_exec(db, sql.c_str(), affichage_all_sql,0, &ErrMsg);
+			rc = sqlite3_exec(db, sql.c_str(), affichage_all_sql,&data, &ErrMsg);
 
 
 			if( rc != SQLITE_OK )
@@ -87,7 +91,7 @@ void Rendez_vous::afficher_rendez_vous()
 		{
 			string sql = "SELECT * FROM RENDEZ_VOUS WHERE nom_medecin = '"+nom_medecin+"' AND prenom_medecin='"+prenom_medecin+"' AND date='"+date+"';";
 			/*Execute SQL statement*/
-			rc = sqlite3_exec(db, sql.c_str(), affichage_all_sql,0, &ErrMsg);
+			rc = sqlite3_exec(db, sql.c_str(), affichage_all_sql,&data, &ErrMsg);
 
 
 			if( rc != SQLITE_OK )
@@ -97,7 +101,7 @@ void Rendez_vous::afficher_rendez_vous()
 				sqlite3_free(ErrMsg);
 			}
 		}
-	}else
+	}else if (personne == 2)
 	{
 		string num_secu;
 		cout << "Entrez le numéro de securité sociale du patient" <<endl;
@@ -106,7 +110,7 @@ void Rendez_vous::afficher_rendez_vous()
 		{
 			string sql = "SELECT * FROM RENDEZ_VOUS WHERE num_secu='"+num_secu+"';";
 			/*Execute SQL statement*/
-			rc = sqlite3_exec(db, sql.c_str(), affichage_all_sql,0, &ErrMsg);
+			rc = sqlite3_exec(db, sql.c_str(), affichage_all_sql,&data, &ErrMsg);
 
 
 			if( rc != SQLITE_OK )
@@ -119,7 +123,7 @@ void Rendez_vous::afficher_rendez_vous()
 		{
 			string sql = "SELECT * FROM RENDEZ_VOUS WHERE num_secu = '"+num_secu+"' AND date='"+date+"';";
 			/*Execute SQL statement*/
-			rc = sqlite3_exec(db, sql.c_str(), affichage_all_sql,0, &ErrMsg);
+			rc = sqlite3_exec(db, sql.c_str(), affichage_all_sql,&data, &ErrMsg);
 
 
 			if( rc != SQLITE_OK )
@@ -131,21 +135,24 @@ void Rendez_vous::afficher_rendez_vous()
 		}
 	}
 
-	int choix_edit;
-	cout << "Souhaitez vous modifier un rendez_vous ?" << endl;
-	cout << "1 - oui" << endl;
-	cout << "2 - non" << endl;
-	cin >> choix_edit;
+	if (data.num_secu != ""){
+		int choix_edit;
+		cout << "Souhaitez vous modifier un rendez_vous ?" << endl;
+		cout << "1 - oui" << endl;
+		cout << "2 - non" << endl;
+		cin >> choix_edit;
 
-	switch (choix_edit)
-	{
-	case 1:
-		edition_rendez_vous();
-		break;
-	case 2:
-		break;
+		switch (choix_edit)
+		{
+		case 1:
+			edition_rendez_vous();
+			break;
+		case 2:
+			break;
+		}
+	}else{
+		cout << "Pas de RDV" << endl << endl;
 	}
-
 
 
 }
@@ -159,6 +166,8 @@ void Rendez_vous::ajouter_rdv()
 	cin >> data.specialite;
 	cout << "Date du rdv : " << endl;
 	cin >> data.date;
+	cout << "Heure du rdv : " << endl;
+	cin >> data.heure;
 	cout << "Nom du patient : " << endl;
 	cin >> data.nom_patient;
 	cout << "Prénom du patient : " << endl;
@@ -177,8 +186,8 @@ void Rendez_vous::creer_rendez_vous()
 	 /* Création de la requete SQL */
 
 
-	string sql = "INSERT INTO RENDEZ_VOUS (nom_medecin,prenom_medecin,specialite,date, nom_patient, prenom_patient, num_secu) "  \
-				 "VALUES ('" +data.nom_medecin+"','"+data.prenom_medecin+"','"+data.specialite+"'','"+data.date+"','"+data.nom_patient+"','"+data.prenom_patient+"','"+data.num_secu+"');";
+	string sql = "INSERT INTO RENDEZ_VOUS (nom_medecin,prenom_medecin,specialite,date,heure, nom_patient, prenom_patient, num_secu) "  \
+				 "VALUES ('" +data.nom_medecin+"','"+data.prenom_medecin+"','"+data.specialite+"'','"+data.date+"','"+data.heure+"','"+data.nom_patient+"','"+data.prenom_patient+"','"+data.num_secu+"');";
 	/* Execution de la requete SQL*/
 	rc = sqlite3_exec(db, sql.c_str(), affichage_sql,0, &ErrMsg);
 
@@ -203,9 +212,11 @@ void Rendez_vous::edition_rendez_vous()
 	cout << "2 - Prénom du médecin" << endl;
 	cout << "3 - Spécialitée" << endl;
 	cout << "4 - Date du rdv : " << endl;
-	cout << "5 - Nom du patient : " << endl;
-	cout << "6 - Prénom du patient : " << endl;
-	cout << "7 - Numéro de sécurité sociale du patient : " << endl;
+	cout << "5 - Heure du rdv : " << endl;
+	cout << "6 - Nom du patient : " << endl;
+	cout << "7 - Prénom du patient : " << endl;
+	cout << "8 - Numéro de sécurité sociale du patient : " << endl;
+	cout << "0 - Retour au menu" << endl;
 	cin >> reponse;
 
 	switch (reponse)
@@ -213,12 +224,12 @@ void Rendez_vous::edition_rendez_vous()
 	case 1 :
 		cout << "Entrez le nom du médecin svp" << endl;
 		cin >> data.nom_medecin;
-		update_db("RENDEZ_VOUS", "nom", data.nom_medecin, "num_secu", data.num_secu);
+		update_db("RENDEZ_VOUS", "nom_medecin", data.nom_medecin, "num_secu", data.num_secu);
 		break;
 	case 2 :
 		cout << "Entrez le prénom du médecin" << endl;
 		cin >> data.prenom_medecin;
-		update_db("RENDEZ_VOUS", "prenom", data.prenom_medecin, "num_secu", data.num_secu);
+		update_db("RENDEZ_VOUS", "prenom_medecin", data.prenom_medecin, "num_secu", data.num_secu);
 		break;
 	case 3 :
 		cout << "Entrez la spécialitée" << endl;
@@ -231,16 +242,21 @@ void Rendez_vous::edition_rendez_vous()
 		update_db("RENDEZ_VOUS", "date", data.date, "num_secu", data.num_secu);
 		break;
 	case 5 :
+		cout << "Entrez l'heure du rendez-vous" << endl;
+		cin >> data.heure;
+		update_db("RENDEZ_VOUS", "heure", data.heure, "num_secu", data.num_secu);
+		break;
+	case 6 :
 		cout << "Entrez la nom du patient" << endl;
 		cin >> data.nom_patient;
 		update_db("RENDEZ_VOUS", "nom_patient", data.nom_patient, "num_secu", data.num_secu);
 		break;
-	case 6 :
+	case 7 :
 		cout << "Entrez le prénom du patient" << endl;
 		cin >> data.prenom_patient;
 		update_db("RENDEZ_VOUS", "specialite", data.specialite, "num_secu", data.num_secu);
 		break;
-	case 7 :
+	case 8 :
 		string temp_secu;
 		cout << "Entrez le numéro de sécurité sociale" << endl;
 		temp_secu = data.num_secu;
