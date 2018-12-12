@@ -77,6 +77,7 @@ void Prescription::afficher_prescription()
 	string ID;
 	string temp_medic;
 	string final_list;
+	bool exist;
 	while(num_secu == "")
 	{
 		cout << "Entrez le numéro de sécurité sociale du patient svp" << endl;
@@ -86,8 +87,9 @@ void Prescription::afficher_prescription()
 	/*Execute SQL statement*/
 	rc = sqlite3_exec(db, sql.c_str(), affichage_sql,&data, &ErrMsg);
 
-	if (num_secu != data.num_secu){
-		cout << "Ce patient n'a pas de prescription" << endl;
+	exist = exist_patient_secu(num_secu,db);
+	if (exist == false){
+		cout << "Ce patient n'existe pas" << endl;
 		return;
 	}
 
@@ -147,6 +149,7 @@ void Prescription::afficher_all_prescription()
 	string choix;
 	string num_secu;
 	string ID;
+	bool exist;
 
 	while(num_secu == "")
 	{
@@ -157,8 +160,9 @@ void Prescription::afficher_all_prescription()
 	/*Execute SQL statement*/
 	rc = sqlite3_exec(db, sql.c_str(), affichage_all_sql,&data, &ErrMsg);
 
-	if (num_secu != data.num_secu){
-		cout << "Ce patient n'a pas de prescription" << endl;
+	exist = exist_patient_secu(num_secu,db);
+	if (exist == false){
+		cout << "Ce patient n'existe pas" << endl;
 		return;
 	}
 

@@ -39,6 +39,16 @@ int DataBase::affichage_sql(void *NotUsed, int argc, char **argv, char **azColNa
 	cout << endl;
 	return 0;
 }
+int DataBase::get_exists(void *p_val, int argc, char **argv, char **azColName) {
+	int i;
+	int *val = (int*)p_val;
+	for(i = 0; i<argc; i++)
+	{
+		*val = stoi(argv[i]);
+	}
+
+	return 0;
+}
 
 void DataBase::set_database(){
 	char* sql;
@@ -199,3 +209,83 @@ void DataBase::update_db(string table, string champ, string val, string ID_champ
 		}
 	}
 }
+
+bool DataBase::exist_medecin(string nom, string prenom,sqlite3* db)
+{
+	bool exist = false;
+	int val;
+	int rc;
+	char *ErrMsg;
+	string sql = "SELECT EXISTS(SELECT * FROM MEDECIN WHERE nom = '"+nom+"' AND prenom='"+prenom+"');";
+	/*Execute SQL statement*/
+	rc = sqlite3_exec(db, sql.c_str(), get_exists,&val, &ErrMsg);
+	if( rc != SQLITE_OK ){
+		cerr << "SQL error: " <<  ErrMsg <<endl;
+		cout << sqlite3_extended_errcode(db) << endl;
+		sqlite3_free(ErrMsg);
+	}
+	if (val == 0)
+	{
+		exist = false;
+	}else if(val == 1)
+	{
+		exist = true;
+	}else
+	{
+		cerr << "Wrong value of exist, check the SQL request"<<endl;
+	}
+	return exist;
+}
+bool DataBase::exist_patient(string nom, string prenom,string date_naissance,sqlite3* db)
+{
+	bool exist = false;
+	int val;
+	int rc;
+	char *ErrMsg;
+	string sql = "SELECT EXISTS(SELECT * FROM PATIENT WHERE nom = '"+nom+"' AND prenom='"+prenom+"'AND date_naissance='"+date_naissance+"');";
+	/*Execute SQL statement*/
+	rc = sqlite3_exec(db, sql.c_str(), get_exists,&val, &ErrMsg);
+	if( rc != SQLITE_OK ){
+		cerr << "SQL error: " <<  ErrMsg <<endl;
+		cout << sqlite3_extended_errcode(db) << endl;
+		sqlite3_free(ErrMsg);
+	}
+	if (val == 0)
+	{
+		exist = false;
+	}else if(val == 1)
+	{
+		exist = true;
+	}else
+	{
+		cerr << "Wrong value of exist, check the SQL request"<<endl;
+	}
+	return exist;
+}
+bool DataBase::exist_patient_secu(string num_secu,sqlite3* db)
+{
+	bool exist = false;
+	int val;
+	int rc;
+	char *ErrMsg;
+	string sql = "SELECT EXISTS(SELECT * FROM PATIENT WHERE num_secu='"+num_secu+"');";
+	/*Execute SQL statement*/
+	rc = sqlite3_exec(db, sql.c_str(), get_exists,&val, &ErrMsg);
+	if( rc != SQLITE_OK ){
+		cerr << "SQL error: " <<  ErrMsg <<endl;
+		cout << sqlite3_extended_errcode(db) << endl;
+		sqlite3_free(ErrMsg);
+	}
+	if (val == 0)
+	{
+		exist = false;
+	}else if(val == 1)
+	{
+		exist = true;
+	}else
+	{
+		cerr << "Wrong value of exist, check the SQL request"<<endl;
+	}
+	return exist;
+}
+

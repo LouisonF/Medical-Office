@@ -83,6 +83,7 @@ void Patient::afficher_info_patient(int reponse)
 	int rc;
 	char *ErrMsg;
 	int temp_reponse;
+	bool exist;
 
 	string sql;
 	string nom;
@@ -106,7 +107,8 @@ void Patient::afficher_info_patient(int reponse)
 
 		sql = "SELECT * FROM PATIENT WHERE nom = '"+nom+"' and prenom = '"+prenom+"' and date_naissance = '"+date_naissance+"'";
 		rc = sqlite3_exec(db, sql.c_str(), affichage_sql,&_data, &ErrMsg);
-		if (nom != _data.nom){
+		exist = exist_patient(nom,prenom,date_naissance,db);
+		if (exist == false){
 			cout << "Ce patient n'existe pas" << endl;
 			return;
 		}
@@ -119,7 +121,8 @@ void Patient::afficher_info_patient(int reponse)
 
 		sql = "SELECT * FROM PATIENT WHERE num_secu = "+num_secu;
 		rc = sqlite3_exec(db, sql.c_str(), affichage_sql,&_data, &ErrMsg);
-		if (num_secu != _data.num_secu){
+		exist = exist_patient_secu(num_secu,db);
+		if (exist == false){
 			cout << "Ce patient n'existe pas" << endl;
 			return;
 		}

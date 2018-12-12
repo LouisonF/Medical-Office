@@ -74,6 +74,7 @@ void Medecin::afficher_info_medecin()
 	string nom;
 	string prenom;
 	int choix;
+	bool exist;
 
 	cout << "Entrer le nom du medecin recherché svp" << endl;
 	cin >> nom;
@@ -82,8 +83,15 @@ void Medecin::afficher_info_medecin()
 	string sql = "SELECT * FROM MEDECIN WHERE nom = '"+nom+"' AND prenom='"+prenom+"';";
 	/*Execute SQL statement*/
 	rc = sqlite3_exec(db, sql.c_str(), affichage_sql,&data, &ErrMsg);
-	if (nom != data.nom){
+	/*if (nom != data.nom)
+	{
 		cout << "Ce medecin n'existe pas" << endl;
+		return;
+	}*/
+	exist = exist_medecin(nom,prenom,db);
+	if (exist == false)
+	{
+		cout << "Le medecin demandé n'existe pas"<<endl;
 		return;
 	}
 
@@ -91,6 +99,7 @@ void Medecin::afficher_info_medecin()
 		cerr << "SQL error: " <<  ErrMsg <<endl;
 		cout << sqlite3_extended_errcode(db) << endl;
 		sqlite3_free(ErrMsg);
+		cout << "testtetsetsetsetset"<<endl;
 	} else
 	{
 		cout << "Voici la fiche du medecin demandée" << endl;
