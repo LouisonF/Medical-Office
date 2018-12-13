@@ -264,14 +264,16 @@ void Patient::remplir_patient()
 void Patient::maj_patient(bool Direct_maj){
 	string temp_num;
 	int reponse;
+	bool exist;
 
 	if (Direct_maj){
 		char *ErrMsg;
 		cout << "Entrez le numéro de sécurité sociale du patient svp" << endl;
 		cin >> temp_num;
 		string sql = "SELECT * FROM PATIENT WHERE num_secu = "+temp_num;
-		if (_data.num_secu != temp_num){
-			cout << "Patient innexistant" << endl << endl;
+		exist = exist_patient_secu(temp_num,db);
+		if (exist == false){
+			cout << "Ce patient n'existe pas" << endl;
 			return;
 		}
 		int rc = sqlite3_exec(db, sql.c_str(), affichage_sql,&_data, &ErrMsg);

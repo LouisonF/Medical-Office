@@ -10,6 +10,7 @@
 #include<iostream>
 #include<string>
 #include<cstring>
+#include<ctime>
 #include "DataBase.h"
 
 class Rendez_vous : public DataBase{

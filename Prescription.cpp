@@ -269,6 +269,11 @@ void Prescription::remplir_pres()
 	cin >> data.num_secu;
 	cout << "Date de délivrance(jj/mm/aaaa) : ";
 	cin >> data.date_delivrance;
+	if(!date_format(data.date_delivrance))
+	{
+		cout << "Entrez la nouvelle date de délivrance(jj/mm/aaaa)" << endl;
+		cin >> data.date_delivrance;
+	}
 	cout << "Nombre de médicament(s) préscrit(s) : ";
 	cin >> nbMed;
 	cout << nbMed << endl;
@@ -322,6 +327,11 @@ void Prescription::edition_prescription(bool know)
 	case 2 :
 		cout << "Entrez la nouvelle date de délivrance(jj/mm/aaaa)" << endl;
 		cin >> data.date_delivrance;
+		if(!date_format(data.date_delivrance))
+		{
+			cout << "Entrez la nouvelle date de délivrance(jj/mm/aaaa)" << endl;
+			cin >> data.date_delivrance;
+		}
 		update_db("PRESCRIPTION", "date_delivrance", data.date_delivrance, "ID", data.ID);
 		break;
 	case 3 :

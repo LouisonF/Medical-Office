@@ -100,7 +100,6 @@ void DataBase::set_database(){
 			"liste_medic	    TEXT    	NOT NULL," \
 			"nom			    TEXT    	NOT NULL," \
 			"prenom			    TEXT    	NOT NULL," \
-			"date_naissance	    TEXT    	NOT NULL," \
 			"num_secu			INTEGER    	NOT NULL);";
 
 	/* Execute SQL statement */
@@ -118,7 +117,7 @@ void DataBase::set_database(){
 				"nom_medecin       TEXT    	NOT NULL," \
 				"prenom_medecin    TEXT    	NOT NULL," \
 				"specialite        TEXT    	NOT NULL," \
-				"date			   TEXT    	NOT NULL," \
+				"date_rdv		   TEXT    	NOT NULL," \
 				"heure			   TEXT    	NOT NULL," \
 				"nom_patient	   TEXT    	NOT NULL," \
 				"prenom_patient	   TEXT    	NOT NULL," \
@@ -149,14 +148,14 @@ void DataBase::insert_test_values(){
 			"VALUES (45, 'DUPONT', 'Olivier', 'Anesthésiste'); "     \
 			"INSERT INTO PRESCRIPTION (ID,prescripteur,date_delivrance,liste_medic,nom,prenom,num_secu,date_naissance)" \
 			"VALUES (466, 'DUPONT', '12/12/2012', 'Paracétamol:1 boîte:3/jour;Ibuprophène:1 boîte:3/jour;', 'COURTIN', 'François', '987654321', '19/02/1996' );" \
-			"INSERT INTO RENDEZ_VOUS (ID,nom_medecin,prenom_medecin,specialite,date,heure,nom_patient,prenom_patient,num_secu)" \
+			"INSERT INTO RENDEZ_VOUS (ID,nom_medecin,prenom_medecin,specialite,date_rdv,heure,nom_patient,prenom_patient,num_secu)" \
 			"VALUES (0101, 'CLAYSSEN', 'Quentin', 'Généraliste', '12/03/2020', '08:30', 'FRESNAIS', 'Louison', '123456789' );" \
 			"INSERT INTO PATIENT (num_secu,nom,prenom,date_naissance,tel,adresse,medecin, grp_sang) "  \
 			"VALUES (123456789, 'FRESNAIS', 'Louison', '01/06/1996', '0613131313', '2 rue Félix Martin', 'CLAYSSEN', 'A+' ); " \
 			"INSERT INTO MEDECIN (ID,nom,prenom,specialite) "  \
 			"VALUES (78, 'CLAYSSEN', 'Quentin', 'Généraliste'); "     \
-			"INSERT INTO PRESCRIPTION (ID,prescripteur,date_delivrance,liste_medic,nom,prenom,num_secu,date_naissance)" \
-			"VALUES (79, 'CLAYSSEN', '13/13/2013', 'Paracétamol:1 boîte:3/jour;Ibuprophène:1 boîte:3/jour;', 'FRESNAIS', 'Louison', '123456789', '01/06/1996' );";
+			"INSERT INTO PRESCRIPTION (ID,prescripteur,date_delivrance,liste_medic,nom,prenom,num_secu)" \
+			"VALUES (79, 'CLAYSSEN', '13/13/2013', 'Paracétamol:1 boîte:3/jour;Ibuprophène:1 boîte:3/jour;', 'FRESNAIS', 'Louison', '123456789');";
 
 	/* Execute SQL statement */
 	rc = sqlite3_exec(db, sql, affichage_sql, 0, &ErrMsg);
@@ -289,3 +288,75 @@ bool DataBase::exist_patient_secu(string num_secu,sqlite3* db)
 	return exist;
 }
 
+bool DataBase::date_format(string date)
+{
+	struct tm tm;
+
+	if (!strptime(date.c_str(), "%d/%m/%Y", &tm))
+	{
+		cout << "Le format de date entré n'est pas valide. JJ/MM/AAAA"<<endl;
+		return false;
+	}
+	return true;
+}
+bool DataBase::hour_format(string heure)
+{
+	struct tm tm;
+	string delimiter = ":";
+	size_t pos_del = 0;
+	string hour;
+	string min;
+
+	if (!strptime(heure.c_str(), "%R", &tm))
+	{
+		cout << "Le format d'heure entré n'est pas valide. HH:MM"<<endl;
+		return false;
+	}
+	pos_del = heure.find(delimiter);
+	hour = heure.substr(0, pos_del);
+	heure.erase(0, pos_del + delimiter.length());
+	min = heure;
+	if(stoi(hour)>19 || stoi(hour)<8)
+	{
+		cout <<"L'horaire demandé n'est pas inclu dans les horaires d'ouverture du cabinet"<<endl;
+		return false;
+	}
+	return true;
+}
+const string DataBase::currentDateTime()
+{
+    time_t     now = time(0);
+    struct tm  tstruct;
+    char       date[80];
+    tstruct = *localtime(&now);
+    strftime(date, sizeof(date), "%d/%m/%Y", &tstruct);
+
+    return date;
+}
+bool DataBase::dispo_medecin(string nom_medecin, string prenom_medecin,string date_rdv,string heure,sqlite3* db)
+{
+	bool dispo = false;
+	int val;
+	int rc;
+	char *ErrMsg;
+	string sql = "SELECT EXISTS(SELECT * FROM RENDEZ_VOUS WHERE nom_medecin='"+nom_medecin+"' AND prenom_medecin='"+prenom_medecin+"'"
+			"AND date_rdv='"+date_rdv+"'AND heure='"+heure+"');";
+	/*Execute SQL statement*/
+	rc = sqlite3_exec(db, sql.c_str(), get_exists,&val, &ErrMsg);
+	if( rc != SQLITE_OK ){
+		cerr << "SQL error: " <<  ErrMsg <<endl;
+		cout << sqlite3_extended_errcode(db) << endl;
+		sqlite3_free(ErrMsg);
+	}
+	if (val == 0)
+	{
+		dispo = true;
+	}else if(val == 1)
+	{
+		dispo = false;
+	}else
+	{
+		cerr << "Wrong value of exist, check the SQL request"<<endl;
+	}
+	return dispo;
+}

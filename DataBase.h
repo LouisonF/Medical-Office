@@ -38,5 +38,9 @@ public:
 	//On ne peut pas overload deux fonctions statiques avec les mêmes types de paramètres.
 	static bool exist_patient_secu(string num_secu,sqlite3* db);
 	static int get_exists(void *NotUsed, int argc, char **argv, char **azColName);
+	static bool date_format(string date);
+	static bool hour_format(string heure);
+	static const string currentDateTime();
+	static bool dispo_medecin(string nom_medecin, string prenom_medecin,string date_rdv,string heure,sqlite3* db);
 };
 #endif /* DATABASE_H_ */
