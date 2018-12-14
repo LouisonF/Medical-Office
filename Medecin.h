@@ -2,13 +2,15 @@
  * Medecin.h
  *
  *  Created on: 8 nov. 2018
- *      Author: COURTIN
+ *      Author: François COURTIN
+ *      		Louison FRESNAIS
  */
 
 #ifndef MEDECIN_H_
 #define MEDECIN_H_
 #include<iostream>
 #include<string>
+#include "Prescription.h"
 #include "DataBase.h"
 
 using namespace std;
@@ -16,7 +18,7 @@ using namespace std;
 class Medecin : public DataBase {
 
 public:
-
+	//Méthodes
 	Medecin();
 	virtual ~Medecin();
 	static int affichage_sql(void *p_data, int argc, char **argv, char **azColName);
@@ -28,6 +30,7 @@ public:
 	void edition_medecin(bool);
 
 private:
+	//Attributs
 	struct data_med
 	{
 		string nom;

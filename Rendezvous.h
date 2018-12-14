@@ -2,7 +2,8 @@
  * Rendezvous.h
  *
  *  Created on: 29 nov. 2018
- *      Author: louison
+ *      Author: François COURTIN
+ *      		Louison FRESNAIS
  */
 
 #ifndef RENDEZVOUS_H_
@@ -11,10 +12,12 @@
 #include<string>
 #include<cstring>
 #include<ctime>
+#include<algorithm>
 #include "DataBase.h"
 
 class Rendez_vous : public DataBase{
 public:
+	//Methodes
 	Rendez_vous();
 	virtual ~Rendez_vous();
 	static int affichage_all_sql(void *p_data, int argc, char **argv, char **azColName);
@@ -24,6 +27,7 @@ public:
 	void edition_rendez_vous();
 
 private:
+	//Attributs
 	struct data_rdv
 	{
 		string nom_medecin;

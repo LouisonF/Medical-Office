@@ -2,13 +2,11 @@
  * Medecin.cpp
  *
  *  Created on: 8 nov. 2018
- *      Author: E146796L
+ *      Author: François COURTIN
+ *      		Louison FRESNAIS
  */
 
 #include "Medecin.h"
-#include "Prescription.h"
-#include<iostream>
-#include<string>
 
 using namespace std;
 
@@ -22,6 +20,8 @@ Medecin::~Medecin()
 {
 	// TODO Auto-generated destructor stub
 }
+/*Cette fonction permet de stocker dans une structure le résultat de la requete sql appelée avec cette fonction en paramètre(cf sqlite3_exec).*/
+
 int Medecin::affichage_sql(void *p_data, int argc, char **argv, char **azColName)
 {
 	int i;
@@ -38,6 +38,7 @@ int Medecin::affichage_sql(void *p_data, int argc, char **argv, char **azColName
 	}
 	return 0;
 }
+/*Cette fonction permet d'afficher sur la sortie standard le résultat de la requete sql appelée avec cette fonction en paramètre(cf sqlite3_exec).*/
 
 int Medecin::affichage_all_sql(void *p_data, int argc, char **argv, char **azColName)
 {
@@ -56,7 +57,7 @@ int Medecin::affichage_all_sql(void *p_data, int argc, char **argv, char **azCol
 	}
 	return 0;
 }
-
+/*Cette méthode permet d'entrer les informations concernant un nouveau médecin à ajouter à la base de donnée*/
 void Medecin::ajouter_medecin()
 {
 	cout << "Nom : " << endl;
@@ -66,7 +67,7 @@ void Medecin::ajouter_medecin()
 	cout << "Spécialité : " << endl;
 	cin >> data.specialite;
 }
-
+/* Cette méthode permet d'afficher les informations concernant un medecin*/
 void Medecin::afficher_info_medecin()
 {
 	int rc;
@@ -80,14 +81,11 @@ void Medecin::afficher_info_medecin()
 	cin >> nom;
 	cout << "Entrer le prénom du medecin recherché svp" << endl;
 	cin >> prenom;
+//Requête pour afficher la fiche d'un medecin en donnant son nom et prénom
 	string sql = "SELECT * FROM MEDECIN WHERE nom = '"+nom+"' AND prenom='"+prenom+"';";
 	/*Execute SQL statement*/
 	rc = sqlite3_exec(db, sql.c_str(), affichage_sql,&data, &ErrMsg);
-	/*if (nom != data.nom)
-	{
-		cout << "Ce medecin n'existe pas" << endl;
-		return;
-	}*/
+//Vérification de l'existance du medecin dans la base de donnée
 	exist = exist_medecin(nom,prenom,db);
 	if (exist == false)
 	{
@@ -104,11 +102,12 @@ void Medecin::afficher_info_medecin()
 	{
 		cout << "Voici la fiche du medecin demandée" << endl;
 	}
+//Affichage de la fiche du medecin
 	cout << "ID : " << data.ID << endl;
 	cout << "Nom  : " << data.nom << endl;
 	cout << "Prénom : " << data.prenom << endl;
 	cout << "Spécialitée : " << data.specialite<< endl << endl;
-
+//Proposition de modification de la fiche en cours de consultation
 	cout << "Souhaitez vous modifier la fiche de ce médecin ?" << endl;
 	cout << "1 - oui" << endl;
 	cout << "2 - non" << endl;
@@ -117,20 +116,21 @@ void Medecin::afficher_info_medecin()
 	switch (choix)
 	{
 	case 1:
+		//Modification de la fiche
 		edition_medecin(true);
 		break;
 	case 2:
 		break;
 	}
 }
-
+/*Cette méthode permet d'afficher les fiches de tous les médecins de la base de donnée*/
 void Medecin::afficher_info_all_medecin()
 {
 	int rc;
 	char *ErrMsg;
 	int choix;
 
-
+//Requête qui permet l'affichage de tous les individus de la table medecin
 	string sql = "SELECT * FROM MEDECIN;";
 	/*Execute SQL statement*/
 	rc = sqlite3_exec(db, sql.c_str(), affichage_all_sql,0, &ErrMsg);
@@ -140,7 +140,7 @@ void Medecin::afficher_info_all_medecin()
 		cout << sqlite3_extended_errcode(db) << endl;
 		sqlite3_free(ErrMsg);
 	}
-
+//Proposition de la modification d'un medecin, étant donné qu'il y a plus d'une fiche, cela se fera via un ID visible sur l'affichage des fiches
 	cout << "Souhaitez vous modifier un médecin ?" << endl;
 	cout << "1 - oui" << endl;
 	cout << "2 - non" << endl;
@@ -156,13 +156,14 @@ void Medecin::afficher_info_all_medecin()
 	}
 
 }
+/*Cette méthode à pour objectif de sauvegarde les données d'un nouveau médecin dans la base de donnée*/
 void Medecin::sauvegarder_medecin()
 {
 	char *ErrMsg;
 	int rc;
 	int error;
 
-	 /* Création de la requete SQL */
+//Requête SQL qui insère les données du nouveau medecin dans la table MEDECIN
 
 	string sql = "INSERT INTO MEDECIN (nom,prenom,specialite) "  \
 	         	 "VALUES ('" +data.nom+"','"+data.prenom+"','"+data.specialite+"');";
@@ -176,16 +177,16 @@ void Medecin::sauvegarder_medecin()
 	}
 
 }
-
+/* Cette méthode à pour objectif d'éditer la fiche d'un medecin déjà existant dans la table*/
 void Medecin::edition_medecin(bool know)
 {
 	int reponse;
-
+//Si cette méthode n'est pas appelée après l'affichage d'une seule fiche, l'utilisateur doit entrer l'identifiant du médecin à modifer
 	if (!know){
 		cout << "Entrez l'ID du médecin à mettre à jour, cf Affichage de la fiche medecin : ";
 		cin >> data.ID;
 	}
-
+//Menu de modification de la fiche d'un médecin
 	cout << "Que voulez vous mettre à jour ? Tapez le numéro correspondant au champ : " << endl;
 	cout << "1 - Nom du médecin " << endl;
 	cout << "2 - Prénom du médecin" << endl;
@@ -198,17 +199,17 @@ void Medecin::edition_medecin(bool know)
 	case 1 :
 		cout << "Entrez le nom du médecin svp" << endl;
 		cin >> data.nom;
-		update_db("PRESCRIPTION", "nom", data.nom, "ID", data.ID);
+		update_db("MEDECIN", "nom", data.nom, "ID", data.ID);
 		break;
 	case 2 :
 		cout << "Entrez le prénom du médecin" << endl;
 		cin >> data.prenom;
-		update_db("PRESCRIPTION", "prenom", data.prenom, "ID", data.ID);
+		update_db("MEDECIN", "prenom", data.prenom, "ID", data.ID);
 		break;
 	case 3 :
 		cout << "Entrez la spécialitée" << endl;
 		cin >> data.specialite;
-		update_db("PRESCRIPTION", "specialite", data.specialite, "ID", data.ID);
+		update_db("MEDECIN", "specialite", data.specialite, "ID", data.ID);
 		break;
 
 	}

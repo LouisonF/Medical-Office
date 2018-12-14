@@ -2,7 +2,8 @@
  * Prescription.h
  *
  *  Created on: 8 nov. 2018
- *      Author: louison
+ *      Author: François COURTIN
+ *      		Louison FRESNAIS
  */
 
 #ifndef PRESCRIPTION_H_
@@ -19,7 +20,6 @@ using namespace std;
 #include<vector>
 class Prescription : public DataBase{
 public:
-	//Atributs
 	//Méthodes
 	Prescription();
 	virtual ~Prescription();
@@ -44,10 +44,6 @@ private:
 		string num_secu;
 	};
 	data_pres data;
-
-
-		//Méthodes
-
 
 };
 

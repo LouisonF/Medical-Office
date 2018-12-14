@@ -2,7 +2,8 @@
  * Prescription.cpp
  *
  *  Created on: 8 nov. 2018
- *      Author: louison
+ *      Author: François COURTIN
+ *      		Louison FRESNAIS
  */
 
 #include "Prescription.h"
@@ -18,6 +19,8 @@ Prescription::~Prescription()
 {
 	// TODO Auto-generated destructor stub
 }
+
+/*Cette fonction permet de stocker dans une structure le résultat de la requete sql appelée avec cette fonction en paramètre(cf sqlite3_exec).*/
 
 int Prescription::affichage_sql(void *p_data, int argc, char **argv, char **azColName)
 {
@@ -42,6 +45,8 @@ int Prescription::affichage_sql(void *p_data, int argc, char **argv, char **azCo
 	}
 	return 0;
 }
+/*Cette fonction permet d'afficher sur la sortie standard le résultat de la requete sql appelée avec cette fonction en paramètre(cf sqlite3_exec).*/
+
 int Prescription::affichage_all_sql(void *p_data, int argc, char **argv, char **azColName)
 {
 
@@ -68,27 +73,42 @@ int Prescription::affichage_all_sql(void *p_data, int argc, char **argv, char **
 	}
 	return 0;
 }
+/* Cette méthode permet d'afficher une prescription pour un patient donné à une date donnée*/
 void Prescription::afficher_prescription()
 {
 	int rc;
 	char *ErrMsg;
 	string choix;
 	string num_secu;
+	string date_delivrance;
 	string ID;
 	string temp_medic;
 	string final_list;
 	bool exist;
+	//Tant que le numero de securité sociale est vide, on le demande
 	while(num_secu == "")
 	{
 		cout << "Entrez le numéro de sécurité sociale du patient svp" << endl;
 		cin >> num_secu;
 	}
+	//Entrée de la date de délivrance de la prescription et vérification du format
+	cout << "Entrez la date de délivrance de la prescription désirée.(jj/mm/yyyy)"<<endl;
+	cin >> date_delivrance;
+	//Vérification du format de la date
+	while(!date_format(date_delivrance))
+	{
+		cout << "Entrez la nouvelle date de rendez-vous(jj/mm/aaaa)" << endl;
+		cin >> date_delivrance;
+	}
+	//Vérification de l'existance du patient dans la base de donnée
 	exist = exist_patient_secu(num_secu,db);
-	if (exist == false){
+	if (exist == false)
+	{
 		cout << "Ce patient n'existe pas" << endl;
 		return;
 	}
-	string sql = "SELECT * FROM PRESCRIPTION WHERE num_secu = "+num_secu+";";
+	//Requête qui selection la prescription selon le numéro de sécurité sociale du patient et la date de délivrance
+	string sql = "SELECT * FROM PRESCRIPTION WHERE num_secu = "+num_secu+" AND date_delivrance = '"+date_delivrance+"';";
 	/*Execute SQL statement*/
 	rc = sqlite3_exec(db, sql.c_str(), affichage_sql,&data, &ErrMsg);
 
@@ -96,51 +116,54 @@ void Prescription::afficher_prescription()
 		cerr << "SQL error: " <<  ErrMsg <<endl;
 		cout << sqlite3_extended_errcode(db) << endl;
 		sqlite3_free(ErrMsg);
-	} else
+	} else if(data.ID != "") // Si il existe une ou des prescription, affiche
 	{
 		cout << "Voici la prescription demandée" << endl;
-	}
-	/*TODO: Vérifier la taille de ce qui est sortit par la requete.
-	   	   	   Si >1, alors refaire la requete avec la date de naissance*/
-
-	cout << "ID : " << data.ID << endl;// TODO: L'ID renvoyé est vide
-	cout << "Nom du medecin : " << data.prescripteur << endl;
-	cout << "Date de délivrance de l'ordonnance : " << data.date_delivrance << endl;
-	for(auto i=0; i<data.liste_medic.size(); i++)
-	{
-		vector<string> temp_list;
-		temp_list = data.liste_medic[i];
-		for(auto j=0; j<3; j++)
+		cout << "ID : " << data.ID << endl;
+		cout << "Nom du medecin : " << data.prescripteur << endl;
+		cout << "Date de délivrance de l'ordonnance : " << data.date_delivrance << endl;
+		//Affichage de la liste des medicaments qui est contenue dans un vecteur
+		for(auto i=0; i<data.liste_medic.size(); i++)
 		{
-			if(j >= 2)
+			vector<string> temp_list;
+			temp_list = data.liste_medic[i];
+			for(auto j=0; j<3; j++)
 			{
-				temp_medic += temp_list.at(j);
-			}else
+				if(j >= 2)
+				{
+					temp_medic += temp_list.at(j);
+				}else
+				{
+					temp_medic += temp_list.at(j)+":";
+				}
+
+			}
+			if(i != data.liste_medic.size()-1)
 			{
-				temp_medic += temp_list.at(j)+":";
+				temp_medic += ",";
 			}
 
 		}
-		if(i != data.liste_medic.size()-1)
+		final_list+= temp_medic;
+		cout << "Liste des médicaments " << final_list <<endl;
+		cout << "Nom : " << data.nom<< endl;
+		cout << "Prénom : " << data.prenom<< endl;
+		cout << "Numéro de sécurité sociale : " << data.num_secu << endl;
+		//Proposition de modification de la prescription affichée
+		cout << "Voulez vous éditer cette prescription ? Choix: Oui ou Non"  << endl;
+		cin >> choix;
+		if(choix == "Oui")
 		{
-			temp_medic += ",";
+			edition_prescription(true);
 		}
-
-	}
-	final_list+= temp_medic;
-	cout << "Liste des médicaments " << final_list <<endl;
-	cout << "Nom : " << data.nom<< endl;
-	cout << "Prénom : " << data.prenom<< endl;
-	cout << "Numéro de sécurité sociale : " << data.num_secu << endl;
-
-	cout << "Voulez vous éditer cette prescription ? Choix: Oui ou Non"  << endl;
-	cin >> choix;
-	if(choix == "Oui")
+	}else
 	{
-		edition_prescription(true);
+		cout <<"Aucune prescription pour ce patient à la date demandée"<<endl;
 	}
+
 
 }
+/* Cette méthode permet d'afficher tout les prescriptions pour un patient donné*/
 void Prescription::afficher_all_prescription()
 {
 	int rc;
@@ -149,17 +172,19 @@ void Prescription::afficher_all_prescription()
 	string num_secu;
 	string ID;
 	bool exist;
-
+	//Tant que le numero de securité sociale est vide, on le demande
 	while(num_secu == "")
 	{
 		cout << "Entrez le numéro de sécurité sociale du patient svp" << endl;
 		cin >> num_secu;
 	}
+	//Vérification de l'existance du patient demandé dans la base de donnée
 	exist = exist_patient_secu(num_secu,db);
 	if (exist == false){
 		cout << "Ce patient n'existe pas" << endl;
 		return;
 	}
+	//Requête permettant l'affichage de toutes les prescriptions pour le patient
 	string sql = "SELECT * FROM PRESCRIPTION WHERE num_secu = "+num_secu+";";
 	/*Execute SQL statement*/
 	rc = sqlite3_exec(db, sql.c_str(), affichage_all_sql,&data, &ErrMsg);
@@ -169,18 +194,19 @@ void Prescription::afficher_all_prescription()
 		cerr << "SQL error: " <<  ErrMsg <<endl;
 		cout << sqlite3_extended_errcode(db) << endl;
 		sqlite3_free(ErrMsg);
-	}
-
-	cout << "Voulez vous éditer une prescription ? Choix: Oui ou Non"  << endl;
-	cin >> choix;
-	if(choix == "Oui")
+	}else
 	{
-		edition_prescription(false);
+		//On propose à l'utilisateur d'éditer l'une des prescription affichée.
+		cout << "Voulez vous éditer une prescription ? Choix: Oui ou Non"  << endl;
+		cin >> choix;
+		if(choix == "Oui")
+		{
+			edition_prescription(false);
+		}
+
 	}
-
-
-
 }
+/*Cette méthode a pour objectif de sauvegarder une prescription dans la base de donnée*/
 void Prescription::sauvegarder_pres()
 {
 
@@ -192,7 +218,7 @@ void Prescription::sauvegarder_pres()
 	bool exist_medic;
 	bool exist_patient;
 
-	/* Création de la requete SQL */
+//Lecture du vecteur de medicaments pour le transformer en une chaine de caractère au format: medicament;quantité;posologie
 	for(auto i=0; i<data.liste_medic.size(); i++)
 	{
 		vector<string> temp_list;
@@ -217,18 +243,19 @@ void Prescription::sauvegarder_pres()
 	final_list+= temp_medic;
 
 	cout << final_list << endl;
-
+//Vérification de l'existance du médecin qui a effectué la prescription
 	exist_medic = exist_nom_medecin(data.prescripteur,db);
 	if (exist_medic == false)
 	{
 		return;
 	}
+//Vérification de l'existance du patient
 	exist_patient = exist_patient_secu(data.num_secu,db);
 	if (exist_patient == false)
 	{
 		return;
 	}
-
+//Requête SQL qui permet l'ajout de la prescription à la table PRESCRIPTION
 	string sql = "INSERT INTO PRESCRIPTION (prescripteur,date_delivrance,liste_medic,nom,prenom,num_secu) "  \
 			"VALUES ('"+data.prescripteur+"','" +data.date_delivrance+"','" +final_list+"','"+data.nom+"','"+data.prenom+"',"+data.num_secu+");";
 	/* Execution de la requete SQL*/
@@ -244,6 +271,7 @@ void Prescription::sauvegarder_pres()
 		cout << "Prescription crée avec succès" << endl;
 		error = -1;
 	}
+	//Tant que le numéro de sécurité social entré existe déjà, on en redemande un  nouveau
 	while (error == 1555){
 		cout << "Le numéro de sécurité social existe déjà, veuillez en rentrer un nouveau svp" << endl;
 		cin >> data.num_secu;
@@ -265,13 +293,14 @@ void Prescription::sauvegarder_pres()
 	}
 
 }
-
+/*Cette méthode a pour objectif de permettre l'entrée par l'utilisateur des données concernant la nouvelle prescription*/
 void Prescription::remplir_pres()
 {
 	int nbMed;
 	string temp;
 	bool exist_medic;
 	bool exist_patient;
+	//Entrée du nom du medecin prescripteur et verification de son existance dans la base de donnée
 	cout << "Nom du Médecin prescripteur : ";
 	cin >> data.prescripteur;
 	exist_medic = exist_nom_medecin(data.prescripteur,db);
@@ -286,6 +315,7 @@ void Prescription::remplir_pres()
 	cin >> data.prenom;
 	cout << "numéro de sécurité sociale du patient";
 	cin >> data.num_secu;
+	//Entrée du numéro de sécurité sociale du patient et vérification de son existance dans la base de donnée
 	exist_patient = exist_patient_secu(data.num_secu,db);
 	if (exist_patient == false)
 	{
@@ -294,7 +324,8 @@ void Prescription::remplir_pres()
 	}
 	cout << "Date de délivrance(jj/mm/aaaa) : ";
 	cin >> data.date_delivrance;
-	if(!date_format(data.date_delivrance))
+	//Entrée de la date de délivrance de la prescription et vérification de son format
+	while(!date_format(data.date_delivrance))
 	{
 		cout << "Entrez la nouvelle date de délivrance(jj/mm/aaaa)" << endl;
 		cin >> data.date_delivrance;
@@ -319,7 +350,7 @@ void Prescription::remplir_pres()
 	}
 
 }
-
+/* Cette méthode permet l'édition d'une prescription dans la base de donnée*/
 void Prescription::edition_prescription(bool know)
 {
 	int reponse;
@@ -328,11 +359,14 @@ void Prescription::edition_prescription(bool know)
 	string temp;
 	string temp_medic;
 	string final_list;
-
-	if (!know){
+//Si cette méthode est appelée juste après l'affichage d'une seule prescription, know sera true et l'ID déjà dans la structure de donnée
+//Si non, l'utilisateur doit rentrer l'ID de la prescription, facilement accessible via afficher_all_prescription
+	if (!know)
+	{
 		cout << "Entrez l'ID de la prescription à mettre à jour, cf Affichage de la prescription : ";
 		cin >> data.ID;
 	}
+//Demande à l'utilisateur ce qu'il veut modifier
 	cout << "Que voulez vous mettre à jour ? Tapez le numéro correspondant au champ : " << endl;
 	cout << "1 - Nom du médecin prescripteur" << endl;
 	cout << "2 - Date de délivrance" << endl;
@@ -352,7 +386,7 @@ void Prescription::edition_prescription(bool know)
 	case 2 :
 		cout << "Entrez la nouvelle date de délivrance(jj/mm/aaaa)" << endl;
 		cin >> data.date_delivrance;
-		if(!date_format(data.date_delivrance))
+		while(!date_format(data.date_delivrance))
 		{
 			cout << "Entrez la nouvelle date de délivrance(jj/mm/aaaa)" << endl;
 			cin >> data.date_delivrance;

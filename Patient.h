@@ -2,20 +2,23 @@
  * Patient.h
  *
  *  Created on: 8 nov. 2018
- *      Author: louison
+ *      Author: François COURTIN
+ *      		Louison FRESNAIS
  */
 
 #ifndef PATIENT_H_
 #define PATIENT_H_
 #include<iostream>
 #include<string>
+#include<vector>
+#include <stdio.h>
+#include <string.h>
 #include "DataBase.h"
 
 namespace std {
 
 class Patient : public DataBase{
 public:
-	//Attributs
 	//Méthodes
 	Patient();
 	virtual ~Patient();
