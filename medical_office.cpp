@@ -195,7 +195,7 @@ int main()
 		cout << "A bientôt ! " <<endl;
 	}
 
-	return 1;
+	return 0;
 
 }
 

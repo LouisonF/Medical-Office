@@ -189,6 +189,8 @@ void Prescription::sauvegarder_pres()
 	int error;
 	string temp_medic;
 	string final_list;
+	bool exist_medic;
+	bool exist_patient;
 
 	/* Création de la requete SQL */
 	for(auto i=0; i<data.liste_medic.size(); i++)
@@ -215,6 +217,17 @@ void Prescription::sauvegarder_pres()
 	final_list+= temp_medic;
 
 	cout << final_list << endl;
+
+	exist_medic = exist_nom_medecin(data.prescripteur,db);
+	if (exist_medic == false)
+	{
+		return;
+	}
+	exist_patient = exist_patient_secu(data.num_secu,db);
+	if (exist_patient == false)
+	{
+		return;
+	}
 
 	string sql = "INSERT INTO PRESCRIPTION (prescripteur,date_delivrance,liste_medic,nom,prenom,num_secu) "  \
 			"VALUES ('"+data.prescripteur+"','" +data.date_delivrance+"','" +final_list+"','"+data.nom+"','"+data.prenom+"',"+data.num_secu+");";
