@@ -151,10 +151,10 @@ void DataBase::insert_test_values(){
 			"VALUES (987654321, 'COURTIN', 'François', '19/02/1996', '0612121212', '3 rue Pierre Martin', 'DUPONT', 'A+' ); " \
 			"INSERT INTO MEDECIN (ID,nom,prenom,specialite) "  \
 			"VALUES (45, 'DUPONT', 'Olivier', 'Anesthésiste'); "     \
-			"INSERT INTO PRESCRIPTION (ID,prescripteur,date_delivrance,liste_medic,nom,prenom,num_secu,date_naissance)" \
-			"VALUES (466, 'DUPONT', '12/12/2012', 'Paracétamol:1 boîte:3/jour;Ibuprophène:1 boîte:3/jour;', 'COURTIN', 'François', '987654321', '19/02/1996' );" \
+			"INSERT INTO PRESCRIPTION (ID,prescripteur,date_delivrance,liste_medic,nom,prenom,num_secu)" \
+			"VALUES (466, 'DUPONT', '12/12/2012', 'Paracétamol:1 boîte:3/jour;Ibuprophène:1 boîte:3/jour;', 'COURTIN', 'François', '987654321');" \
 			"INSERT INTO RENDEZ_VOUS (ID,nom_medecin,prenom_medecin,specialite,date_rdv,heure,nom_patient,prenom_patient,num_secu)" \
-			"VALUES (0101, 'CLAYSSEN', 'Quentin', 'Généraliste', '12/03/2020', '08:30', 'FRESNAIS', 'Louison', '123456789' );" \
+			"VALUES (0101, 'CLAYSSEN', 'Quentin', 'Généraliste', '12/03/2020', '08:00', 'FRESNAIS', 'Louison', '123456789' );" \
 			"INSERT INTO PATIENT (num_secu,nom,prenom,date_naissance,tel,adresse,medecin, grp_sang) "  \
 			"VALUES (123456789, 'FRESNAIS', 'Louison', '01/06/1996', '0613131313', '2 rue Félix Martin', 'CLAYSSEN', 'A+' ); " \
 			"INSERT INTO MEDECIN (ID,nom,prenom,specialite) "  \
