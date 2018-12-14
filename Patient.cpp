@@ -233,6 +233,8 @@ void Patient::sauvegarder_dossier()
 void Patient::remplir_patient()
 {
 
+	string date_temp;
+
 	cout << "Entrez le nom du patient svp" << endl;
 	cin >> _data.nom;
 
@@ -240,7 +242,11 @@ void Patient::remplir_patient()
 	cin >> _data.prenom;
 
 	cout << "Entrez la date de naissance du patient svp (jj/mm/aaaa)" << endl;
-	cin >> _data.date_naissance;
+	cin >> date_temp;
+	while(!date_format(date_temp)){
+		cin >> date_temp;
+	}
+	_data.date_naissance = date_temp;
 
 	cout << "Entrez le numéro de téléphone du patient svp" << endl;
 	cin >> _data.tel;
