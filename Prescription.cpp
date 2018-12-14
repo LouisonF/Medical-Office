@@ -83,15 +83,14 @@ void Prescription::afficher_prescription()
 		cout << "Entrez le numéro de sécurité sociale du patient svp" << endl;
 		cin >> num_secu;
 	}
-	string sql = "SELECT * FROM PRESCRIPTION WHERE num_secu = "+num_secu+";";
-	/*Execute SQL statement*/
-	rc = sqlite3_exec(db, sql.c_str(), affichage_sql,&data, &ErrMsg);
-
 	exist = exist_patient_secu(num_secu,db);
 	if (exist == false){
 		cout << "Ce patient n'existe pas" << endl;
 		return;
 	}
+	string sql = "SELECT * FROM PRESCRIPTION WHERE num_secu = "+num_secu+";";
+	/*Execute SQL statement*/
+	rc = sqlite3_exec(db, sql.c_str(), affichage_sql,&data, &ErrMsg);
 
 	if( rc != SQLITE_OK ){
 		cerr << "SQL error: " <<  ErrMsg <<endl;
@@ -156,15 +155,14 @@ void Prescription::afficher_all_prescription()
 		cout << "Entrez le numéro de sécurité sociale du patient svp" << endl;
 		cin >> num_secu;
 	}
-	string sql = "SELECT * FROM PRESCRIPTION WHERE num_secu = "+num_secu+";";
-	/*Execute SQL statement*/
-	rc = sqlite3_exec(db, sql.c_str(), affichage_all_sql,&data, &ErrMsg);
-
 	exist = exist_patient_secu(num_secu,db);
 	if (exist == false){
 		cout << "Ce patient n'existe pas" << endl;
 		return;
 	}
+	string sql = "SELECT * FROM PRESCRIPTION WHERE num_secu = "+num_secu+";";
+	/*Execute SQL statement*/
+	rc = sqlite3_exec(db, sql.c_str(), affichage_all_sql,&data, &ErrMsg);
 
 	if( rc != SQLITE_OK )
 	{
@@ -259,14 +257,28 @@ void Prescription::remplir_pres()
 {
 	int nbMed;
 	string temp;
+	bool exist_medic;
+	bool exist_patient;
 	cout << "Nom du Médecin prescripteur : ";
 	cin >> data.prescripteur;
+	exist_medic = exist_nom_medecin(data.prescripteur,db);
+	if (exist_medic == false)
+	{
+		cout << "Le medecin demandé n'existe pas"<<endl;
+		return;
+	}
 	cout << "Nom du patient : ";
 	cin >> data.nom;
 	cout << "Prénom du patient : ";
 	cin >> data.prenom;
 	cout << "numéro de sécurité sociale du patient";
 	cin >> data.num_secu;
+	exist_patient = exist_patient_secu(data.num_secu,db);
+	if (exist_patient == false)
+	{
+		cout << "Ce patient n'existe pas" << endl;
+		return;
+	}
 	cout << "Date de délivrance(jj/mm/aaaa) : ";
 	cin >> data.date_delivrance;
 	if(!date_format(data.date_delivrance))

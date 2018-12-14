@@ -235,6 +235,32 @@ bool DataBase::exist_medecin(string nom, string prenom,sqlite3* db)
 	}
 	return exist;
 }
+bool DataBase::exist_nom_medecin(string nom,sqlite3* db)
+{
+	bool exist = false;
+	int val;
+	int rc;
+	char *ErrMsg;
+	string sql = "SELECT EXISTS(SELECT * FROM MEDECIN WHERE nom = '"+nom+"');";
+	/*Execute SQL statement*/
+	rc = sqlite3_exec(db, sql.c_str(), get_exists,&val, &ErrMsg);
+	if( rc != SQLITE_OK ){
+		cerr << "SQL error: " <<  ErrMsg <<endl;
+		cout << sqlite3_extended_errcode(db) << endl;
+		sqlite3_free(ErrMsg);
+	}
+	if (val == 0)
+	{
+		exist = false;
+	}else if(val == 1)
+	{
+		exist = true;
+	}else
+	{
+		cerr << "Wrong value of exist, check the SQL request"<<endl;
+	}
+	return exist;
+}
 bool DataBase::exist_patient(string nom, string prenom,string date_naissance,sqlite3* db)
 {
 	bool exist = false;

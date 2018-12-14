@@ -34,6 +34,7 @@ public:
 	   char**    /* An array of strings representing column names */
 	);
 	static bool exist_medecin(string nom, string prenom,sqlite3* db);
+	static bool exist_nom_medecin(string nom,sqlite3* db);
 	static bool exist_patient(string nom, string prenom,string date_naissance,sqlite3* db);
 	//On ne peut pas overload deux fonctions statiques avec les mêmes types de paramètres.
 	static bool exist_patient_secu(string num_secu,sqlite3* db);
